@@ -77,3 +77,83 @@
 .detail-budget-summary span{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:#486d76;font-weight:800}
 .detail-budget-summary strong{font-size:28px;color:#205968;line-height:1.2}
 .detail-budget-summary small{font-size:11px;line-height:1.45;color:#577882}
+
+/* Quiet, collapsed pricing controls. The itinerary cards remain the primary
+   budget comparison; this disclosure is for sources and manual adjustments. */
+.planning-price-details{
+  border-top:1px solid #d6dfdc;
+  border-bottom:1px solid #d6dfdc;
+  margin:28px 0 26px;
+  color:#34505a;
+}
+.planning-price-details>summary{
+  cursor:pointer;
+  padding:17px 3px;
+  font-size:14px;
+  font-weight:650;
+  color:#2b6272;
+  list-style:revert;
+}
+.planning-price-details>summary:hover{color:#a66251}
+.planning-price-details[open]>summary{border-bottom:1px solid #d6dfdc}
+.planning-price-content{
+  padding:18px 3px 24px;
+  max-width:780px;
+}
+.planning-price-content>p:first-child{
+  margin:0 0 17px;
+  font-size:13px;
+  line-height:1.65;
+  color:#4d6770;
+}
+.planning-price-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.planning-price-actions .bb-refresh,.planning-price-actions .bb-copy{
+  padding:10px 14px;
+  border:1px solid #2c6977;
+  font-size:12px;
+  letter-spacing:0;
+  font-weight:650;
+  min-height:42px;
+  cursor:pointer;
+}
+.planning-price-actions .bb-refresh{color:#fff;background:#2b6877}
+.planning-price-actions .bb-copy{color:#2b6877;background:#fff;border-color:#b3c9ce}
+.planning-price-actions button:disabled{opacity:.55;cursor:wait}
+.planning-price-content .bb-price-count,.planning-price-content .bb-price-status{
+  font-size:12px;
+  color:#496973;
+  line-height:1.6;
+  margin:10px 0 0;
+}
+.planning-price-content .bb-booked-summary{
+  display:grid;
+  gap:5px;
+  margin-top:20px;
+  border-top:1px solid #e0e7e5;
+  padding:17px 0 0;
+}
+.planning-price-content .bb-booked-summary>strong{font-size:13px;color:#334f56}
+.planning-price-content #bbBookingDisplay{font-size:19px;font-weight:700;color:#275d6a}
+.planning-price-content .bb-booked-summary>small{font-size:12px;color:#5c757b}
+.planning-price-content .bb-booking-adjust{margin-top:8px;font-size:12px;max-width:380px}
+.planning-price-content .bb-booking-adjust summary{cursor:pointer;color:#306b78;font-weight:650}
+.planning-price-content .bb-booking-adjust label{display:flex;flex-direction:column;gap:6px;margin:12px 0 6px;font-size:12px}
+.planning-price-content .bb-booking-adjust input{
+  width:190px;
+  max-width:100%;
+  padding:9px;
+  border:1px solid #b9cbcf;
+  background:#fff;
+  min-height:42px;
+  color:#263c44;
+}
+.planning-price-content .bb-booking-adjust small{font-size:11px;color:#61777e;line-height:1.6;display:block}
+.planning-price-content .bb-methodology{
+  border:0;
+  border-top:1px solid #e0e7e5;
+  margin-top:19px;
+  padding-top:14px;
+}
+.planning-price-content .bb-methodology summary{font-size:12px;color:#306b78;font-weight:650}
+.planning-price-content .bb-methodology p{font-size:12px;color:#4c6670;line-height:1.65;max-width:74ch}
+.planning-price-content .bb-methodology a{color:#2a7188;text-decoration:underline;text-underline-offset:3px}

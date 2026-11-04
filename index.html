@@ -16,10 +16,9 @@
 
   </style>
 
-<link rel="stylesheet" href="flight-prices.css?v=3" />
+<link rel="stylesheet" href="flight-prices.css?v=4" />
   <link rel="stylesheet" href="community-itineraries.css?v=1" />
-  <link rel="stylesheet" href="site-refinement.css?v=2" />
-</head>
+  </head>
 <body class="site-home">
   <a class="skip-link" href="#itineraries">Skip to itineraries</a>
   <div class="eyebrow-bar"><span>PERSONAL TRIP PLANNING</span><span>AUSTRALIA · JULY 2027</span></div>
@@ -83,69 +82,7 @@
           </div>
           <div class="toolbar-right"><label class="search-wrap"><span class="sr-only">Search itineraries</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search a destination" autocomplete="off" /></label><label class="sort-wrap"><span class="sr-only">Sort itineraries</span><select id="sortSelect"><option value="recommended">Recommended order</option><option value="fare">Lowest airfare first</option><option value="total">Lowest total trip estimate first</option><option value="cost">Lower budget first</option><option value="pace">Most relaxed first</option><option value="alpha">A to Z</option></select></label></div>
         </div>
-<section id="fareHub" class="bb-price-panel" aria-labelledby="fareHubTitle">
-  <div class="bb-price-head">
-   <div>
-    <p class="bb-price-overline">Flight comparison · July 2027</p>
-    <h3 id="fareHubTitle">Trip costs, including flights</h3>
-    <p>Flights update through Google Flights data. Other costs are researched estimates for six travelers, except for our confirmed Brisbane hotel booking. Flight legs are priced separately, not as one bookable itinerary.</p>
-   </div>
-   <button class="bb-refresh" id="bbRefresh" type="button">Check flight prices</button>
-  </div>
-  <div class="bb-price-controls">
-    <div class="bb-booked-summary" aria-label="Confirmed Brisbane hotel booking">
-      <span>Brisbane hotel · booked</span>
-      <strong id="bbBookingDisplay">A$10,700 group total</strong>
-      <small id="bbBookingUsd">≈ US$7,506 total / US$1,251 each · 6 travelers · Nov 4 exchange rate</small>
-      <details class="bb-booking-adjust">
-        <summary>Adjust booking amount</summary>
-        <label for="bbBookingAud">Total cost for all six (AUD)
-          <input id="bbBookingAud" type="number" min="1" max="100000" step="1" value="10700">
-        </label>
-        <small>Changes on this device only; the November 4 USD exchange rate stays fixed.</small>
-      </details>
-    </div>
-    <button class="bb-copy" id="bbCopyRoutes" type="button">Copy flight routes</button>
-    <span id="bbPriceCount" style="font-size:12px;color:#42646a"></span>
-  </div>
-  <p id="bbQuoteStatus" class="bb-price-status" role="status">Checking fare-service connection…</p>
-  <details class="bb-price-notes"><summary>How accurate are these prices?</summary><p class="bb-price-footnote">Airfare is sourced from Google Flights via SerpApi and cached for up to three days (200 searches/month cap). It is the lowest separate one-way economy fare for <strong>one adult</strong>; six seats at that rate are not guaranteed. Airport timing, baggage, connections and through-ticket availability must be checked before booking. Aside from the booked Brisbane hotel, ground costs are <strong>November 2026 research-based estimates, not July 2027 quotes</strong>. The planning range is a scenario, not a statistical confidence interval. Meal/tour choices, actual bed configuration and exchange rates can materially change totals.</p></details>
- </section>
-        <section id="budgetOverview" class="bb-budget-overview" aria-labelledby="bbBudgetTitle">
-          <div class="bb-budget-overview-head">
-            <div>
-              <p class="bb-price-overline">FULL-TRIP BUDGETS · USD PER ADULT</p>
-              <h3 id="bbBudgetTitle">What would each trip cost?</h3>
-              <p>All options share the booked Brisbane hotel, four estimated nights in Sydney, and seven nights in other destinations. For unbooked stays we compare shared hotel rooms with group rentals.</p>
-            </div>
-            <div class="bb-budget-side"><span>Traveling together</span><strong>6 adults</strong><small>Rooms shared two per room; other arrangements are still estimates.</small></div>
-          </div>
-          <div id="bbBudgetLeaderboard" class="bb-budget-leaderboard" aria-live="polite">
-            <p>Loading the current flight-price totals…</p>
-          </div>
-          <details class="bb-methodology">
-            <summary>How the estimates and room-sharing comparisons are calculated</summary>
-            <p><strong>Accommodation:</strong> Brisbane is confirmed at A$10,700 for six, converted at A$1 = US$0.701513 on November 4, 2026. Each person's share is about US$1,251. For other stays, we compare three rooms (including a 12% tax/fee estimate) with a legal six-person rental including cleaning fees. We prefer hotel rooms if the rental saves less than 5%. These other rates are shopping targets, <strong>not verified July 2027 bookings</strong>.</p>
-            <p><strong>Other costs:</strong> Destination-based daily meal and local travel budgets plus itinerary-specific excursions, airport transfers, insurance, checked baggage, travel-day meals and entry allowances. Add a 10% buffer to unbooked ground expenses, excluding the confirmed Brisbane hotel. Flights retain the live-feed cached price; the displayed scenario range assumes ground costs approximately 15% lower to 30% higher and fares up to 40% higher than the lowest returned separate legs.</p>
-            <p><strong>Research benchmarks:</strong>
-              <a href="https://www.budgetyourtrip.com/australia/brisbane/" target="_blank" rel="noopener noreferrer">Brisbane</a> ·
-              <a href="https://www.budgetyourtrip.com/Australia/Sydney" target="_blank" rel="noopener noreferrer">Sydney</a> ·
-              <a href="https://www.budgetyourtrip.com/fiji" target="_blank" rel="noopener noreferrer">Fiji</a> ·
-              <a href="https://www.queenstownnz.co.nz/stories/post/queenstown-accommodation-faqs/" target="_blank" rel="noopener noreferrer">Queenstown</a> ·
-              <a href="https://balinsky.info/en/knowledge/bali-villa-rental-rates-by-area-2026" target="_blank" rel="noopener noreferrer">3-bedroom Bali villas</a> ·
-              <a href="https://www.budgetyourtrip.com/australia/cairns" target="_blank" rel="noopener noreferrer">Cairns</a> ·
-              <a href="https://www.budgetyourtrip.com/Japan/tokyo" target="_blank" rel="noopener noreferrer">Tokyo</a> ·
-              <a href="https://www.budgetyourtrip.com/Singapore" target="_blank" rel="noopener noreferrer">Singapore</a> ·
-              <a href="https://www.budgetyourtrip.com/australia/darwin/" target="_blank" rel="noopener noreferrer">Darwin</a> ·
-              <a href="https://www.budgetyourtrip.com/Vietnam" target="_blank" rel="noopener noreferrer">Vietnam</a> ·
-              <a href="https://www.budgetyourtrip.com/australia/melbourne" target="_blank" rel="noopener noreferrer">Melbourne</a> ·
-              <a href="https://www.nerdwallet.com/travel/learn/are-airbnbs-more-cost-effective-than-hotels" target="_blank" rel="noopener noreferrer">Six-person accommodation comparison</a> ·
-              <a href="https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/" target="_blank" rel="noopener noreferrer">Singapore rental restrictions</a>.
-            </p>
-            <p>Other accommodation and cost benchmarks collected November 4, 2026. Brisbane lodging is booked; its USD equivalent uses that date's reference rate. Other July 2027 room availability and prices are not verified. Some itinerary narrative transfer dates differ from the flight-search dates; the cost model follows the flight-search legs. No automatic prices are estimated for custom group-submitted itineraries.</p>
-          </details>
-        </section>
-        <div class="itinerary-grid" id="itineraryGrid" aria-live="polite"></div>
+<div class="itinerary-grid" id="itineraryGrid" aria-live="polite"></div>
         <div class="empty-state" id="emptyState" hidden><h3>No itineraries found</h3><p>Try another destination or remove a filter.</p><button type="button" class="button button-outline-dark" id="resetFilters">SHOW ALL EIGHT</button></div>
       </div>
     </section>
@@ -195,6 +132,35 @@
           <article><div class="planning-no">02</div><h3>Leave space to breathe</h3><p>Each sample itinerary deliberately includes lighter afternoons or full rest days after major flights and excursions.</p></article>
           <article><div class="planning-no">03</div><h3>Check the full flight price</h3><p>The airfare feed sums the lowest separate one-way prices, not a guaranteed bookable multi-city ticket. Check the whole journey.</p></article>
         </div>
+        <details id="fareHub" class="planning-price-details">
+          <summary>Flight pricing and budget assumptions</summary>
+          <div class="planning-price-content">
+            <p>Each card shows the latest cached airfare plus estimated lodging, meals, transport and activities. The Brisbane hotel is already booked. All other costs are planning estimates, not bookable quotes.</p>
+            <div class="planning-price-actions">
+              <button id="bbRefresh" type="button" class="bb-refresh">Check flight prices</button>
+              <button id="bbCopyRoutes" type="button" class="bb-copy">Copy flight routes</button>
+            </div>
+            <p id="bbQuoteStatus" class="bb-price-status" role="status">Checking flight prices…</p>
+            <p id="bbPriceCount" class="bb-price-count" aria-live="polite"></p>
+            <div class="bb-booked-summary">
+              <strong>Brisbane hotel · booked</strong>
+              <span id="bbBookingDisplay">A$10,700 group total</span>
+              <small id="bbBookingUsd">≈ US$7,506 total · US$1,251 each (six people, November 4 reference rate)</small>
+              <details class="bb-booking-adjust">
+                <summary>Adjust the booking total</summary>
+                <label for="bbBookingAud">Total for all six in AUD
+                  <input id="bbBookingAud" type="number" min="1" max="100000" step="1" value="10700" />
+                </label>
+                <small>Changes apply only on this device; the reference exchange rate stays fixed.</small>
+              </details>
+            </div>
+            <details class="bb-methodology">
+              <summary>How the estimates are calculated</summary>
+              <p>Airfare is the sum of separately priced Google Flights one-way legs, cached for up to three days. Six seats and protected connections are not guaranteed. All other costs are researched estimates for July 2027, except the confirmed Brisbane hotel. For unbooked lodging, the model compares three shared hotel rooms with a six-person rental, including modeled taxes and cleaning fees; it uses the rental only when savings exceed 5%. Singapore uses hotels. A 10% contingency covers unbooked ground expenses; the planning range is not a statistical confidence interval.</p>
+              <p>Cost benchmarks: <a href="https://www.budgetyourtrip.com/" target="_blank" rel="noopener noreferrer">Budget Your Trip</a> and local travel-cost references linked in each itinerary's accommodation breakdown. All figures should be checked before booking.</p>
+            </details>
+          </div>
+        </details>
         <div class="note-strip"><span class="note-symbol">i</span><p><strong>Independent planning project.</strong> This website is inspired by the clean, photographic destination presentation of JW Event, but it is not affiliated with JW Event or Jehovah's Witnesses. All travel schedules are illustrative and subject to flights, visa rules, weather and actual bookings.</p></div>
       </div>
     </section>
