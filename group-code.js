@@ -89,6 +89,7 @@ async function activate(first,last){
  localStorage.setItem(storage,JSON.stringify(memberIdentity));
  await loadBallot();
  view('votingView');
+ if(location.hash==='#suggestions')requestAnimationFrame(()=>document.getElementById('suggestions')?.scrollIntoView({block:'start',behavior:'smooth'}));
  $('identityText').textContent='Personal ballot · your name is never shown publicly';
  await refreshLeaderboard();
  if(poll)clearInterval(poll);
