@@ -58,3 +58,12 @@ button.ss-added{background:#d4e9f2;color:#275f72;border-color:#8ac1d1}
 .ss-jump{display:flex;gap:18px;align-items:center;justify-content:space-between;background:#edf4f4;border:1px solid #d4e4e5;padding:18px 22px;margin:24px 0 0}
 .ss-jump div{display:flex;flex-direction:column;gap:5px}.ss-jump strong{font-size:15px;color:#365864}.ss-jump span{font-size:12px;color:#607983;line-height:1.5}.ss-jump .btn{flex-shrink:0;text-align:center;text-decoration:none}
 @media(max-width:640px){.ss-jump{flex-direction:column;align-items:stretch}.ss-jump .btn{width:100%}}
+
+/* Group-submitted alternatives on the tier board and leaderboard */
+.group-suggestion-tile{border-color:#7cb5c0;background:#f1f8f9;box-shadow:inset 3px 0 #4c99a9}
+.group-suggestion-tile small{color:#3b7a88;font-weight:700;letter-spacing:.15px}
+.group-suggestion-result{border-left:3px solid #6ba8b4;padding-left:9px;background:linear-gradient(90deg,#eff7f8 0%,transparent 65%)}
+.group-suggestion-result .result-label{color:#256c7d}
+.unranked-result .meter{opacity:.35}
+.unranked-result .result-value{color:#98afb5}
+.group-suggestion-result .result-detail{gap:8px;flex-wrap:wrap}
