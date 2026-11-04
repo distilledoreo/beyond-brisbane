@@ -374,7 +374,7 @@ function openDetail(id){
  $('#detailContent').innerHTML=`
  <div class="detail-hero"><img src="${t.image}" data-photo-id="${t.id}" alt="Illustration of ${safe(t.name)}"/><button type="button" class="icon-button detail-close" data-close="detail" aria-label="Close itinerary details">×</button><div class="detail-hero-text"><p>${safe(t.locale)} · ITINERARY ${t.number}</p><h2 id="detailTitle">${safe(t.name)}</h2></div></div>
  <div class="detail-inner"><div class="detail-kicker"><span>${safe(t.subtitle).toUpperCase()}</span> · JULY 2027</div><p class="detail-intro">${safe(t.intro)}</p>
- <div class="detail-budget-summary"><span>Estimated full trip / adult (cached flights + modeled ground)</span><strong>${window.BeyondFares?.total?.(t.id) != null ? new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(window.BeyondFares.total(t.id)) : 'Airfare pending'}</strong><small>Six adults sharing, with lodging, meals, local transport, activities, insurance and allowances. See the main card for the detailed budget.</small></div>
+ <div class="detail-budget-summary"><span>Estimated full trip / adult (cached flights + modeled ground)</span><strong>${window.BeyondFares?.total?.(t.id) != null ? new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Math.round(window.BeyondFares.total(t.id)/50)*50) : 'Airfare pending'}</strong><small>Six adults sharing, with lodging, meals, local transport, activities, insurance and allowances. See the main card for the detailed budget.</small></div>
  <div class="detail-stats"><div class="detail-stat"><small>WHEN</small><strong>${safe(t.dates)}</strong></div><div class="detail-stat"><small>BUDGET LEVEL</small><strong>${safe(t.cost)}</strong></div><div class="detail-stat"><small>PACE</small><strong>${safe(t.pace)}</strong></div><div class="detail-stat"><small>SEASON</small><strong>${safe(t.weather)}</strong></div></div>
  <h3 class="detail-section-title">The proposed journey</h3><p class="detail-intro" style="font-size:14px;margin-bottom:7px">${safe(t.route)}</p>
  <div class="detail-schedule">${t.days.map(d=>`<div class="detail-day"><span>${safe(d[0])}</span><p>${safe(d[1])}</p></div>`).join('')}</div>
@@ -390,7 +390,7 @@ function openComparison(){
  $('#comparisonContent').innerHTML=`<p class="comparison-hint">Compare the routes after the fixed Brisbane and Sydney stops. The total combines cached flight quotes with researched land-cost estimates. Figures are not bookable prices.</p><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>YOUR CHOICES</th>${trips.map(t=>`<th><img class="compare-thumb" src="${t.image}" data-photo-id="${t.id}" alt="Illustration of ${safe(t.name)}"/>${safe(t.name)}</th>`).join('')}</tr></thead><tbody>
  ${row('Travel pattern',t=>t.route.replace('Brisbane → Sydney → ',''))}
  ${row('Typical dates',t=>t.dates)}
- ${row('Estimated total / adult',t=>{const v=window.BeyondFares?.total?.(t.id);return v===null||v===undefined?'Airfare pending':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v)})}
+ ${row('Estimated total / adult',t=>{const v=window.BeyondFares?.total?.(t.id);return v===null||v===undefined?'Airfare pending':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Math.round(v/50)*50)})}
  ${row('Budget level',t=>t.cost)}
  ${row('Pace',t=>t.pace)}
  ${row('Best for',t=>t.best)}
@@ -443,7 +443,7 @@ window.addEventListener('bb:prices-changed',render);
 
   </script>
   <script src="ground-budgets.js?v=2" defer></script>
-  <script src="flight-prices.js?v=4" defer></script>
+  <script src="flight-prices.js?v=5" defer></script>
   <script src="community-itineraries.js?v=1" defer></script>
 </body>
 </html>
