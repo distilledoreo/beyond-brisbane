@@ -116,7 +116,7 @@
           </div>
           <details class="bb-methodology">
             <summary>How the estimates and room-sharing comparisons are calculated</summary>
-            <p><strong>Lodging:</strong> At each location, compare the modeled full cost of three hotel rooms for six people (three rooms × nightly rate × nights, plus an assumed 12% for hotel taxes/fees) with a three-bedroom rental for six (whole-unit nightly target × nights + estimated cleaning/service charges). Use the lower modeled total divided by six. Rentals are only included when plausibly legal; Singapore uses hotels, and Brisbane stays with the convention hotel. These are modeled targets, <strong>not verified properties or July 2027 rate quotes</strong>. Confirm six-adult occupancy, bed arrangements, location, taxes and fees before booking.</p>
+            <p><strong>Lodging:</strong> At each location, compare the modeled full cost of three hotel rooms for six people (three rooms × nightly rate × nights, plus an assumed 12% for hotel taxes/fees) with a three-bedroom rental for six (whole-unit nightly target × nights + estimated cleaning/service charges). Use the lower modeled total divided by six, preferring hotels when rental savings are under 5% to avoid questionable cleaning-fee differences. Rentals are only included when plausibly legal; Singapore uses hotels, and Brisbane stays with the convention hotel. These are modeled targets, <strong>not verified properties or July 2027 rate quotes</strong>. Confirm six-adult occupancy, bed arrangements, location, taxes and fees before booking.</p>
             <p><strong>Other costs:</strong> Destination-based daily meal and local travel budgets plus itinerary-specific excursions, airport transfers, insurance, checked baggage, travel-day meals and entry allowances. Add a 10% buffer to estimated ground expenses. Flights retain the live-feed cached price; the displayed scenario range assumes ground costs approximately 15% lower to 30% higher and fares up to 40% higher than the lowest returned separate legs.</p>
             <p><strong>Research benchmarks:</strong>
               <a href="https://www.budgetyourtrip.com/australia/brisbane/" target="_blank" rel="noopener noreferrer">Brisbane</a> ·
@@ -374,12 +374,13 @@ function openDetail(id){
  $('#detailContent').innerHTML=`
  <div class="detail-hero"><img src="${t.image}" data-photo-id="${t.id}" alt="Illustration of ${safe(t.name)}"/><button type="button" class="icon-button detail-close" data-close="detail" aria-label="Close itinerary details">×</button><div class="detail-hero-text"><p>${safe(t.locale)} · ITINERARY ${t.number}</p><h2 id="detailTitle">${safe(t.name)}</h2></div></div>
  <div class="detail-inner"><div class="detail-kicker"><span>${safe(t.subtitle).toUpperCase()}</span> · JULY 2027</div><p class="detail-intro">${safe(t.intro)}</p>
+ <div class="detail-budget-summary"><span>Estimated full trip / adult (cached flights + modeled ground)</span><strong>${window.BeyondFares?.total?.(t.id) != null ? new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(window.BeyondFares.total(t.id)) : 'Airfare pending'}</strong><small>Six adults sharing, with lodging, meals, local transport, activities, insurance and allowances. See the main card for the detailed budget.</small></div>
  <div class="detail-stats"><div class="detail-stat"><small>WHEN</small><strong>${safe(t.dates)}</strong></div><div class="detail-stat"><small>BUDGET LEVEL</small><strong>${safe(t.cost)}</strong></div><div class="detail-stat"><small>PACE</small><strong>${safe(t.pace)}</strong></div><div class="detail-stat"><small>SEASON</small><strong>${safe(t.weather)}</strong></div></div>
  <h3 class="detail-section-title">The proposed journey</h3><p class="detail-intro" style="font-size:14px;margin-bottom:7px">${safe(t.route)}</p>
  <div class="detail-schedule">${t.days.map(d=>`<div class="detail-day"><span>${safe(d[0])}</span><p>${safe(d[1])}</p></div>`).join('')}</div>
  <div class="detail-columns"><section><h3 class="detail-section-title">Why this works</h3>${list(t.good)}</section><section><h3 class="detail-section-title">What to check</h3>${list(t.watch)}</section></div>
  <div class="detail-actions"><button type="button" class="button button-accent" id="detailCompareButton" data-compare="${t.id}">${state.compare.has(t.id)?'✓ REMOVE FROM COMPARISON':'+ ADD TO COMPARISON'}</button><button type="button" class="button detail-secondary" data-copy="${t.id}">COPY ITINERARY DETAILS</button><a class="text-link" target="_blank" rel="noopener noreferrer" href="${safe(t.credit)}" style="color:#7e8f95;font-size:10px">IMAGE SOURCE ↗</a></div>
- <p class="detail-disclaimer">Suggested activities and dates are examples only. Flights, accommodation, event times, prices and entry requirements are not verified for July 2027. The original trip still begins with Brisbane and Sydney.</p></div>`;
+ <p class="detail-disclaimer">Suggested activities and dates are examples only. Only the airfare feed is updated automatically; accommodation and other travel costs are non-live planning estimates. Check all prices, event times, and entry requirements for July 2027. The original trip still begins with Brisbane and Sydney.</p></div>`;
  hydratePhotos();showDialog('detail');
 }
 function openComparison(){
@@ -389,7 +390,8 @@ function openComparison(){
  $('#comparisonContent').innerHTML=`<p class="comparison-hint">Compare the routes after the fixed Brisbane and Sydney stops. The total combines cached flight quotes with researched land-cost estimates. Figures are not bookable prices.</p><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>YOUR CHOICES</th>${trips.map(t=>`<th><img class="compare-thumb" src="${t.image}" data-photo-id="${t.id}" alt="Illustration of ${safe(t.name)}"/>${safe(t.name)}</th>`).join('')}</tr></thead><tbody>
  ${row('Travel pattern',t=>t.route.replace('Brisbane → Sydney → ',''))}
  ${row('Typical dates',t=>t.dates)}
- ${row('Budget',t=>t.cost)}
+ ${row('Estimated total / adult',t=>{const v=window.BeyondFares?.total?.(t.id);return v===null||v===undefined?'Airfare pending':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v)})}
+ ${row('Budget level',t=>t.cost)}
  ${row('Pace',t=>t.pace)}
  ${row('Best for',t=>t.best)}
  ${row('Protected downtime',t=>t.downtime)}
@@ -440,7 +442,7 @@ render();
 window.addEventListener('bb:prices-changed',render);
 
   </script>
-  <script src="ground-budgets.js?v=1" defer></script>
+  <script src="ground-budgets.js?v=2" defer></script>
   <script src="flight-prices.js?v=4" defer></script>
   <script src="community-itineraries.js?v=1" defer></script>
 </body>
