@@ -50,7 +50,7 @@ function renderBallot(){
 }
 function renderLeaderboard(rows){
  const root=$('leaderboard');root.replaceChildren();
- if(!rows?.length){root.textContent='Results unavailable. Check your member code.';return;}
+ if(!rows?.length){root.textContent='Results temporarily unavailable. Please refresh the page.';return;}
  const n=Math.max(0,...rows.map(r=>Number(r.voter_count)||0));
  $('countline').textContent=n===1?'1 group member has saved a complete tier list.':n+' group members have saved complete tier lists.';
  if(!n){const p=document.createElement('p');p.className='no-data';p.textContent='No ballots saved yet. Be the first!';root.append(p);return;}
@@ -80,8 +80,11 @@ async function loadBallot(){
  saved=norm(data);draft=norm(data);renderBallot();
 }
 async function activate(first,last){
- first=first.trim();last=last.trim();
+ first=first.trim().toUpperCase();last=last.trim().toUpperCase();
  if(first.length<2||last.length<2||first.length>70||last.length>70)throw new Error('Please enter your full first and last name.');
+ const {data:allowed,error:membershipError}=await client.rpc('bb_name_allowed',{p_first:first,p_last:last});
+ if(membershipError)throw membershipError;
+ if(allowed!==true)throw new Error('Name not recognized. Please enter the exact first and last name registered by your trip organizer.');
  memberIdentity={first,last};
  localStorage.setItem(storage,JSON.stringify(memberIdentity));
  await loadBallot();
@@ -93,7 +96,7 @@ async function activate(first,last){
 }
 async function signin(e){
  e.preventDefault();
- const first=$('firstName').value.trim(),last=$('lastName').value.trim();
+ const first=$('firstName').value.trim().toUpperCase(),last=$('lastName').value.trim().toUpperCase();
  if(!first||!last)return;
  const btn=$('loginButton');btn.disabled=true;notice('');
  try{
@@ -106,17 +109,21 @@ async function signin(e){
 async function save(){
  if(!memberIdentity||!complete())return;
  const btn=$('saveVotes');btn.disabled=true;$('saveStatus').textContent='Saving…';notice('');
- try{const {data,error}=await client.rpc('bb_name_save_ballot',{p_first:memberIdentity.first,p_last:memberIdentity.last,p_tiers:draft});if(error)throw error;if(data!==true)throw new Error('Access code was not accepted.');
+ try{const {data,error}=await client.rpc('bb_name_save_ballot',{p_first:memberIdentity.first,p_last:memberIdentity.last,p_tiers:draft});if(error)throw error;if(data!==true)throw new Error('Your name was not recognized as an approved traveler.');
  saved=norm(draft);renderBallot();notice('Your vote is saved. You can edit it at any time.','success');await refreshLeaderboard();}
  catch(e){notice('Could not save your vote: '+e.message,'error');renderBallot();}
 }
 function signout(){
  if(poll)clearInterval(poll);poll=null;memberIdentity=null;localStorage.removeItem(storage);saved=null;draft=blank();view('loginView');
  $('identityText').textContent='Names are never shown publicly or stored as plain text in the voting database.';
- status('Signed out');notice('Signed out. Your saved vote is still available with your personal code.','success');
+ status('Signed out');notice('Signed out. Your saved vote is still available using the same full name.','success');
 }
 async function init(){
  $('loginForm').addEventListener('submit',signin);
+ for(const id of ['firstName','lastName']){
+  const el=$(id);
+  el.addEventListener('input',()=>{const before=el.selectionStart;el.value=el.value.toUpperCase();if(before!==null)el.setSelectionRange(before,before);});
+ }
  $('saveVotes').addEventListener('click',save);
  $('refreshBoard').addEventListener('click',refreshLeaderboard);
  $('resetVotes').addEventListener('click',()=>{draft=blank();renderBallot();notice('Draft cleared; your last saved vote is unchanged.');});
