@@ -10,8 +10,8 @@ const options=[
 {id:'vietnam',title:'Vietnam & Singapore',sub:'Cultural Adventure',photo:'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=180&q=70'},
 {id:'melbourne',title:'Melbourne & Singapore',sub:'Coastal Contrast',photo:'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=180&q=70'}];
 const tiers=['S','A','B','C','D'],$=id=>document.getElementById(id);
-const storage='beyond-brisbane-private-member-code-v1';
-let client=null,memberCode='',saved=null,draft={},poll=null;
+const storage='beyond-brisbane-name-voting-v2';
+let client=null,memberIdentity=null,saved=null,draft={},poll=null;
 function blank(){return Object.fromEntries(options.map(o=>[o.id,'']));}
 function norm(obj){const r=blank();if(obj&&typeof obj==='object')for(const o of options)if(tiers.includes(obj[o.id]))r[o.id]=obj[o.id];return r;}
 function view(id){['setupView','loginView','inviteView','votingView'].forEach(k=>{if($(k))$(k).hidden=k!==id});$('signout').hidden=id!=='votingView';}
@@ -71,39 +71,48 @@ function renderLeaderboard(rows){
  });
 }
 async function refreshLeaderboard(){
- if(!memberCode)return;
- try{const {data,error}=await client.rpc('bb_get_totals',{p_code:memberCode});if(error)throw error;renderLeaderboard(data);status('Group leaderboard · refreshes every 10 seconds',true);}
+ if(!memberIdentity)return;
+ try{const {data,error}=await client.rpc('bb_name_get_totals');if(error)throw error;renderLeaderboard(data);status('Group leaderboard · refreshes every 10 seconds',true);}
  catch(e){status('Leaderboard unavailable');notice('Could not refresh group results: '+e.message,'error');}
 }
 async function loadBallot(){
- const {data,error}=await client.rpc('bb_get_ballot',{p_code:memberCode});if(error)throw error;
+ const {data,error}=await client.rpc('bb_name_get_ballot',{p_first:memberIdentity.first,p_last:memberIdentity.last});if(error)throw error;
  saved=norm(data);draft=norm(data);renderBallot();
 }
-async function activate(code){
- const {data,error}=await client.rpc('bb_validate_access',{p_code:code});if(error)throw error;
- if(data!==true)throw new Error('That member code is invalid. Ask the trip organizer for your own code.');
- memberCode=code;localStorage.setItem(storage,code);
- await loadBallot();view('votingView');$('identityText').textContent='Private member access · no names or emails stored';
- await refreshLeaderboard();if(poll)clearInterval(poll);poll=setInterval(refreshLeaderboard,10000);
+async function activate(first,last){
+ first=first.trim();last=last.trim();
+ if(first.length<2||last.length<2||first.length>70||last.length>70)throw new Error('Please enter your full first and last name.');
+ memberIdentity={first,last};
+ localStorage.setItem(storage,JSON.stringify(memberIdentity));
+ await loadBallot();
+ view('votingView');
+ $('identityText').textContent='Personal ballot · your name is never shown publicly';
+ await refreshLeaderboard();
+ if(poll)clearInterval(poll);
+ poll=setInterval(refreshLeaderboard,10000);
 }
 async function signin(e){
- e.preventDefault();const first=$('firstName').value.trim(),last=$('lastName').value.trim(),code=$('accessCode').value.trim();
- if(!first||!last||!code)return;
+ e.preventDefault();
+ const first=$('firstName').value.trim(),last=$('lastName').value.trim();
+ if(!first||!last)return;
  const btn=$('loginButton');btn.disabled=true;notice('');
- try{await activate(code);$('firstName').value='';$('lastName').value='';$('accessCode').value='';notice('Signed in. Keep your individual access code safe so you can edit your ballot on another device.','success');}
- catch(e){notice(e.message||'Could not sign in.','error');}
+ try{
+  await activate(first,last);
+  $('firstName').value='';$('lastName').value='';
+  notice('Signed in. Your preferences are saved under your name, and you can edit them at any time.','success');
+ }catch(e){memberIdentity=null;localStorage.removeItem(storage);notice(e.message||'Could not sign in.','error');}
  finally{btn.disabled=false;}
 }
 async function save(){
- if(!memberCode||!complete())return;
+ if(!memberIdentity||!complete())return;
  const btn=$('saveVotes');btn.disabled=true;$('saveStatus').textContent='Saving…';notice('');
- try{const {data,error}=await client.rpc('bb_save_ballot',{p_code:memberCode,p_tiers:draft});if(error)throw error;if(data!==true)throw new Error('Access code was not accepted.');
+ try{const {data,error}=await client.rpc('bb_name_save_ballot',{p_first:memberIdentity.first,p_last:memberIdentity.last,p_tiers:draft});if(error)throw error;if(data!==true)throw new Error('Access code was not accepted.');
  saved=norm(draft);renderBallot();notice('Your vote is saved. You can edit it at any time.','success');await refreshLeaderboard();}
  catch(e){notice('Could not save your vote: '+e.message,'error');renderBallot();}
 }
 function signout(){
- if(poll)clearInterval(poll);poll=null;memberCode='';localStorage.removeItem(storage);saved=null;draft=blank();view('loginView');
- $('identityText').textContent='No member names or emails are stored by the voting service.';
+ if(poll)clearInterval(poll);poll=null;memberIdentity=null;localStorage.removeItem(storage);saved=null;draft=blank();view('loginView');
+ $('identityText').textContent='Names are never shown publicly or stored as plain text in the voting database.';
  status('Signed out');notice('Signed out. Your saved vote is still available with your personal code.','success');
 }
 async function init(){
@@ -115,8 +124,17 @@ async function init(){
  const cfg=window.BEYOND_BRISBANE_VOTING||{};
  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(cfg.url||'')||!cfg.publishableKey||!window.supabase?.createClient){view('setupView');status('Connection not configured');return;}
  client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+ localStorage.removeItem('beyond-brisbane-private-member-code-v1');
  const existing=localStorage.getItem(storage);
- if(existing){try{await activate(existing);return;}catch(e){localStorage.removeItem(storage);notice('Previous sign-in expired or is invalid. Enter your personal code again.','error');}}
+ if(existing){
+  try{
+   const identity=JSON.parse(existing);
+   if(identity&&typeof identity.first==='string'&&typeof identity.last==='string'){
+    await activate(identity.first,identity.last);return;
+   }
+  }catch(e){}
+  memberIdentity=null;localStorage.removeItem(storage);
+ }
  view('loginView');status('Private voting is ready',true);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
