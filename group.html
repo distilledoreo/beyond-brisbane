@@ -23,7 +23,7 @@
     <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">◈</span><span><strong>BEYOND BRISBANE</strong><small>2027 TRAVEL COLLECTION</small></span></a>
     <nav class="headnav" aria-label="Main navigation"><a href="index.html#itineraries">ITINERARIES</a><a href="group.html" aria-current="page">GROUP CHOICES</a><button type="button" id="signout" class="tiny-button" hidden>SIGN OUT</button></nav>
   </div></header>
-  <section class="hero"><div class="wrap"><span class="hero-tag">THE GROUP DECIDES</span><h1>Eight destinations.<br><em>One shared adventure.</em></h1><p>Build your own tier list, save your choices privately, and see the group's evolving favorites. Change your mind whenever you want.</p></div></section>
+  <section class="hero"><div class="wrap"><span class="hero-tag">THE GROUP DECIDES</span><h1>Eight original ideas.<br><em>Room for yours, too.</em></h1><p>Build your own tier list, save your choices privately, and see the group's evolving favorites. Change your mind whenever you want.</p></div></section>
   <main class="main wrap">
     <div class="status-strip"><div><span id="statusDot" class="status-dot"></span><span id="statusText" class="status-line">Checking voting service…</span></div><div class="meta" id="identityText">No names or individual votes appear on the leaderboard.</div></div>
     <div class="notice" id="alert" role="status" aria-live="polite" hidden></div>
@@ -42,13 +42,13 @@
     </section>
     <div id="votingView" hidden>
       <div class="two-up">
-        <section class="card" aria-labelledby="my-tier-title"><p class="overline">YOUR BALLOT</p><h2 id="my-tier-title">Make your tier list.</h2><p class="subhead">Drag cards into a tier, or use each card's dropdown (also works on phones). Assign all eight itineraries before saving. Several options can share the same tier.</p>
-          <div class="list-toolbar"><span class="meta" id="completionStatus">0 of 8 ranked</span><button type="button" class="tiny-button" id="resetVotes" style="color:#496570;border-color:#afc0c5">CLEAR DRAFT</button></div>
+        <section class="card" aria-labelledby="my-tier-title"><p class="overline">YOUR BALLOT</p><h2 id="my-tier-title">Make your tier list.</h2><p class="subhead">Drag cards into a tier, or use each card's dropdown (also works on phones). Rank all eight original itineraries before saving. Group-submitted itineraries appear here automatically and can be ranked or left unranked. Several options can share the same tier.</p>
+          <div class="list-toolbar"><span class="meta" id="completionStatus">0 of 8 originals ranked</span><button type="button" class="tiny-button" id="resetVotes" style="color:#496570;border-color:#afc0c5">CLEAR DRAFT</button></div>
           <div id="tierBoard" class="tier-board" aria-label="Your editable tier list"></div>
           <div class="buttonrow" style="margin-top:22px"><button type="button" class="btn" id="saveVotes">SAVE MY TIER LIST →</button><span id="saveStatus" class="save-status" role="status" aria-live="polite"></span></div>
-          <p class="smallprint">S = must-do · A = love it · B = interested · C = lower priority · D = not for me. Your saved ballot can be revised any time.</p>
+          <p class="smallprint">S = must-do · A = love it · B = interested · C = lower priority · D = not for me. New group ideas start unranked; you can rate them later. Your saved ballot can be revised any time.</p>
         </section>
-        <section class="card" aria-labelledby="leaderboard-title"><p class="overline">LIVE GROUP OPINION</p><h2 id="leaderboard-title">The leaderboard.</h2><p class="subhead">Ranked by average tier score, from 5 points for S to 1 for D. Individual ballots and members' names are never displayed.</p><div id="leaderboard" aria-live="polite"><p class="no-data">Loading group preferences…</p></div><div class="countline" id="countline"></div><button class="btn secondary" id="refreshBoard" type="button" style="margin-top:15px">REFRESH RESULTS</button></section>
+        <section class="card" aria-labelledby="leaderboard-title"><p class="overline">LIVE GROUP OPINION</p><h2 id="leaderboard-title">The leaderboard.</h2><p class="subhead">Ranked by average tier score, from 5 points for S to 1 for D. Individual ballots and members' names are never displayed. Newly submitted itineraries are included automatically; those without ratings appear at the bottom. Each group idea shows how many members have rated it.</p><div id="leaderboard" aria-live="polite"><p class="no-data">Loading group preferences…</p></div><div class="countline" id="countline"></div><button class="btn secondary" id="refreshBoard" type="button" style="margin-top:15px">REFRESH RESULTS</button></section>
       </div>
       <div class="ss-jump">
         <div><strong>Have another destination in mind?</strong><span>Build your own trip on the interactive calendar and share it with the group.</span></div>
@@ -59,7 +59,7 @@
         <div class="ss-heading">
           <p class="overline">YOUR IDEAS · OUR NEXT DESTINATION</p>
           <h2 id="suggestTitle">Submit an itinerary.</h2>
-          <p>Brisbane and Sydney are already locked in. Pick dates for the rest of the trip, type a destination, and add as many stops as you like. Then share your idea with the group—without changing the original eight itineraries.</p>
+          <p>Brisbane and Sydney are already locked in. Pick dates for the rest of the trip, type a destination, and add as many stops as you like. Then share your idea with the group—without changing the original eight itineraries. Submitted ideas also appear automatically as optional choices on the tier list.</p>
         </div>
         <div class="ss-compose">
           <div class="ss-legend" aria-label="Calendar color legend">
@@ -114,7 +114,7 @@ window.BEYOND_BRISBANE_VOTING = {
 };
 
   </script>
-  <script src="group-code.js?v=5" defer></script>
-  <script src="group-suggestions.js?v=2" defer></script>
+  <script src="group-code.js?v=6" defer></script>
+  <script src="group-suggestions.js?v=3" defer></script>
 </body>
 </html>
