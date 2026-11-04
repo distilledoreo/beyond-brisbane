@@ -93,6 +93,7 @@ async function activate(first,last){
  await refreshLeaderboard();
  if(poll)clearInterval(poll);
  poll=setInterval(refreshLeaderboard,10000);
+ window.dispatchEvent(new CustomEvent('bb:member-ready',{detail:{first,last,client}}));
 }
 async function signin(e){
  e.preventDefault();
@@ -115,6 +116,7 @@ async function save(){
 }
 function signout(){
  if(poll)clearInterval(poll);poll=null;memberIdentity=null;localStorage.removeItem(storage);saved=null;draft=blank();view('loginView');
+ window.dispatchEvent(new Event('bb:member-signed-out'));
  $('identityText').textContent='Names are never shown publicly or stored as plain text in the voting database.';
  status('Signed out');notice('Signed out. Your saved vote is still available using the same full name.','success');
 }
