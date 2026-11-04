@@ -1,0 +1,56 @@
+/* Beyond Brisbane — six-person calendar itinerary suggestions */
+.ss-section{margin-top:45px;border-top:1px solid var(--line);padding-top:37px}
+.ss-heading{margin-bottom:21px}.ss-heading .overline{color:#5a7882}.ss-heading h2{font-size:clamp(27px,4vw,38px);line-height:1.16;margin:8px 0 10px}.ss-heading p{max-width:820px;color:#536a74;font-size:14px;line-height:1.7;margin:0}
+.ss-compose{background:white;border:1px solid #d7e2e4;box-shadow:0 14px 34px #172b380b;padding:clamp(17px,2.8vw,28px)}
+.ss-legend{display:flex;flex-wrap:wrap;gap:12px 20px;padding:0 0 17px;font-size:12px;color:#516873}
+.ss-key{display:inline-flex;align-items:center;gap:7px}.ss-dot{width:12px;height:12px;border:1px solid #bdcfd1;display:inline-block}.ss-dot.travel{background:#e2e7eb}.ss-dot.brisbane{background:#d8e7e1}.ss-dot.sydney{background:#f1e3d8}.ss-dot.open{background:#fff;border:2px solid #6b9eab}.ss-dot.added{background:#d5eaf1;border-color:#5a9cb2}
+.ss-months{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;align-items:start}
+.ss-month{min-width:0;background:#f8faf9;border:1px solid #dce7e8;padding:13px}
+.ss-month h4{font-size:12px;letter-spacing:2px;color:#2f5d6c;margin:4px 0 16px;font-weight:750;text-align:center}
+.ss-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.ss-weekday{text-align:center;color:#6a8089;font-size:9px;letter-spacing:.4px;font-weight:700;padding:0 1px 7px}
+.ss-empty{min-width:0;min-height:62px}
+button.ss-day{min-width:0;min-height:62px;display:flex;align-items:flex-start;justify-content:space-between;flex-direction:column;gap:4px;text-align:left;background:#fff;border:1px solid #d8e4e7;border-radius:3px;padding:6px 4px;color:#304b56;box-shadow:none;transition:border-color .12s,background .12s}
+button.ss-day:disabled{opacity:1;cursor:default}
+.ss-day-no{font-size:13px;font-weight:680;line-height:1.1}.ss-day-label{font-size:7px;letter-spacing:.15px;font-weight:800;line-height:1.1;overflow-wrap:anywhere;max-width:100%}
+button.ss-outside{background:#f7f9f8;border-color:transparent;color:#b5c1c5}
+button.ss-travel,button.ss-return{background:#e2e7eb;color:#5e707b;border-color:#cdd6db}
+button.ss-brisbane{background:#d8e7e1;color:#2f6453;border-color:#c8dcd3}
+button.ss-sydney{background:#f1e3d8;color:#805b4b;border-color:#e7d2c2}
+button.ss-open:hover:enabled{border-color:#33798c;background:#eaf5f6}
+button.ss-open.ss-selected,button.ss-open.ss-start{background:#cbe9ee;border:2px solid #287c91;color:#145467}
+button.ss-added{background:#d4e9f2;color:#275f72;border-color:#8ac1d1}
+.ss-selection{background:#f1f7f7;color:#406673;font-size:13px;line-height:1.6;margin:17px 0 0;padding:12px 14px;border-left:3px solid #65a2b0}
+.ss-editor{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end;margin:16px 0 3px}
+.ss-editor label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#3b5b66;font-weight:700}
+.ss-editor input{min-height:47px;width:100%;border:1px solid #c8d8dc;background:#fff;padding:12px;font:inherit;border-radius:2px}
+.ss-editor button{min-height:47px;white-space:nowrap}
+.ss-draft{margin-top:20px;padding-top:18px;border-top:1px solid #dce8e9}
+.ss-draft-title{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:9px}
+.ss-draft-title h3{font-size:17px;margin:0}.ss-draft-title span{font-size:12px;color:#70838b}
+.ss-stops{display:grid;gap:7px}
+.ss-quiet{background:#f6f8f8;border:1px dashed #c9d8da;padding:16px;font-size:12px;color:#6b7d84;line-height:1.6;margin:0}
+.ss-stop{border:1px solid #e0e7e8;background:#fafcfc;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:11px 13px}
+.ss-stop-text{display:flex;flex-direction:column;gap:4px;min-width:0}.ss-stop-text strong{font-size:14px;overflow-wrap:anywhere}.ss-stop-text small{font-size:12px;color:#6f8189}
+.ss-remove{font-size:10px;font-weight:750;letter-spacing:.6px;border:1px solid #cddcdd;background:transparent;color:#576d77;padding:8px 10px;flex-shrink:0}.ss-remove:hover{background:#e9f2f3;color:#225869}
+.ss-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:19px}
+.ss-actions .btn{white-space:normal}.ss-status{font-size:12px;color:#536e78;line-height:1.5;margin:10px 0 0;min-height:17px}
+.ss-status.ss-error{color:#a0473b}.ss-status.ss-success{color:#267554}
+.ss-group{margin-top:31px;background:white;border:1px solid #d7e2e4;box-shadow:var(--shadow);padding:clamp(17px,2.8vw,28px)}
+.ss-group-head{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.ss-group-head h3{font-size:22px;margin:6px 0 6px}.ss-group-head p{color:#6a7e86;font-size:12px;line-height:1.6;margin:0}
+.ss-group-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.ss-group-actions span{font-size:12px;color:#59717a}
+.ss-ideas{display:grid;gap:10px}
+.ss-idea{border:1px solid #dbe5e6;background:#fafcfc;min-width:0}
+.ss-idea-header{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 17px;color:#314f5c;list-style-position:inside}
+.ss-idea-header:hover{background:#eef5f6}
+.ss-idea-heading{display:inline-flex;flex-direction:column;gap:5px;max-width:calc(100% - 80px)}
+.ss-idea-heading strong{font-size:15px;font-weight:700;overflow-wrap:anywhere}.ss-idea-heading small{font-size:11px;color:#71858b}
+.ss-mine{white-space:nowrap;font-size:9px;letter-spacing:1px;color:#246c7a;background:#e1f2f4;padding:5px 7px;font-weight:800}
+.ss-idea-body{padding:1px 18px 15px;border-top:1px solid #e0e9e9}
+.ss-idea-leg{display:grid;grid-template-columns:120px 1fr;gap:15px;border-bottom:1px solid #e8eded;padding:10px 0;align-items:baseline;font-size:12px}
+.ss-idea-leg span{color:#71828b}.ss-idea-leg strong{color:#315866;font-size:13px;overflow-wrap:anywhere}
+.ss-withdraw{margin-top:13px}
+.ss-disclaimer{margin:17px 0 0;color:#6b7d85;font-size:12px;line-height:1.65}
+@media(max-width:850px){.ss-months{grid-template-columns:1fr}.ss-empty,button.ss-day{min-height:61px}.ss-group-head{flex-direction:column}}
+@media(max-width:520px){.ss-month{padding:8px}.ss-days{gap:3px}.ss-weekday{font-size:8px}.ss-empty,button.ss-day{min-height:47px}button.ss-day{padding:4px 2px}.ss-day-no{font-size:11px}.ss-day-label{font-size:6px}.ss-editor{grid-template-columns:1fr}.ss-editor button{width:100%}.ss-idea-leg{grid-template-columns:1fr;gap:3px}.ss-idea-heading strong{font-size:13px}.ss-idea-header{padding:12px 9px}.ss-idea-body{padding:2px 12px 12px}}
