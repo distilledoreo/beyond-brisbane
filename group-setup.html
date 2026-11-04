@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Organizer Setup | Beyond Brisbane 2027</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#233740;background:#f6f8f7}
+*{box-sizing:border-box}body{margin:0}header{background:#203039;color:#fff;padding:24px 5%;letter-spacing:.06em}header a{color:#d6e3e8;text-decoration:none;font-size:12px}
+header strong{display:block;margin-top:8px;font-size:21px;letter-spacing:.04em}
+main{width:min(850px,calc(100% - 32px));margin:36px auto 70px}
+h1{font-size:32px;font-weight:550;margin:0 0 10px}.intro{color:#50636c;line-height:1.6;max-width:760px}
+.card{background:white;border:1px solid #dce5e6;padding:26px;box-shadow:0 12px 40px #162a3510}
+.card h2{font-size:18px;margin:0 0 12px}
+label{font-size:12px;font-weight:700;display:block;margin-bottom:7px}
+input{width:100%;padding:12px;border:1px solid #cad6d9;background:white;font:inherit;min-height:46px;border-radius:2px}
+input:focus-visible,button:focus-visible{outline:3px solid #db9585;outline-offset:2px}
+.names{display:grid;gap:9px;margin:16px 0}
+.person{display:grid;grid-template-columns:90px 1fr 1fr;gap:12px;align-items:end;padding:11px 0;border-bottom:1px solid #e3e9e9}
+.person span{padding-bottom:14px;font-size:13px;font-weight:650;color:#48616b}
+.person input{text-transform:uppercase}
+button{background:#28798b;color:white;border:0;padding:15px 22px;cursor:pointer;font:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;margin-top:16px}
+button:disabled{opacity:.5;cursor:wait}
+.status{margin:16px 0;min-height:22px;font-size:14px;color:#4f6470}
+.status.error{color:#a13430}.status.success{color:#14724c}
+.note{background:#edf3f3;border-left:3px solid #28798b;padding:16px;line-height:1.55;font-size:13px;color:#3e5b65}
+@media(max-width:600px){.person{grid-template-columns:1fr 1fr;gap:7px}.person span{grid-column:1/-1;padding:0}.card{padding:16px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js" defer></script>
+</head><body>
+<header><a href="group.html">← Back to Group Choices</a><strong>BEYOND BRISBANE 2027</strong></header>
+<main><h1>Private group setup</h1>
+<p class="intro">Organizer only. Register exactly six travelers once, then everyone can sign in using just their first and last names. Names never appear in the public website's code or its leaderboard.</p>
+<section class="card">
+<h2>Allowed travelers</h2>
+<p class="intro" style="font-size:13px">Enter each person's exact first and last name. Case doesn't matter—everything is automatically converted to CAPITAL LETTERS. To change the group later, enter all six names again; removed people will lose access, and their votes will be removed.</p>
+<form id="setupForm">
+<div id="names" class="names"></div>
+<label for="adminCode">Organizer setup key</label>
+<input id="adminCode" type="password" autocomplete="off" required placeholder="Paste the private organizer key">
+<button id="setupButton" type="submit">SAVE SIX TRAVELERS</button>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+</form>
+</section>
+<p class="note"><strong>Privacy:</strong> The server stores only salted, secret-keyed identifiers for registered names, not the names themselves. The setup key is not stored in the website. Name-only sign-in remains easy to impersonate—someone who knows a registered person's full name can edit that person's vote.</p>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const root=document.getElementById('names'),form=document.getElementById('setupForm'),status=document.getElementById('status');
+  for(let i=0;i<6;i++){
+    const row=document.createElement('div');row.className='person';
+    const n=document.createElement('span');n.textContent='Member '+(i+1);
+    row.append(n);
+    for(const [key,placeholder] of [['first','First name'],['last','Last name']]){
+      const wrap=document.createElement('div');const label=document.createElement('label'),input=document.createElement('input');
+      const id=key+(i+1);label.htmlFor=id;label.textContent=placeholder;input.id=id;input.dataset.field=key;input.maxLength=70;input.required=true;input.autocomplete='off';input.placeholder=placeholder;
+      input.addEventListener('input',()=>{const pos=input.selectionStart;input.value=input.value.toUpperCase();if(pos!==null)input.setSelectionRange(pos,pos);});
+      wrap.append(label,input);row.append(wrap);
+    }root.append(row);
+  }
+  const client=window.supabase?.createClient('https://forjvxdumfenuardlyci.supabase.co','sb_publishable_NW3IlBA3FaNVDchM03pGLg_Ah2x4G7h',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();status.className='status';status.textContent='';
+    const members=[];
+    for(let i=1;i<=6;i++)members.push({first:document.getElementById('first'+i).value.trim().toUpperCase(),last:document.getElementById('last'+i).value.trim().toUpperCase()});
+    if(new Set(members.map(m=>m.first+'|'+m.last)).size!==6){status.className='status error';status.textContent='Every person must have a different full name.';return;}
+    const key=document.getElementById('adminCode').value.trim();
+    if(!client){status.className='status error';status.textContent='The voting service could not be loaded.';return;}
+    const button=document.getElementById('setupButton');button.disabled=true;status.textContent='Saving the private roster…';
+    try{
+      const {data,error}=await client.rpc('bb_configure_group_voters',{p_admin_code:key,p_members:members});
+      if(error)throw error;if(data!==true)throw Error('Could not save. Check your organizer key and all six names.');
+      status.className='status success';status.textContent='Saved. Exactly six names are now eligible to vote. You can share the regular Group Choices page.';
+      document.querySelectorAll('.person input').forEach(el=>el.value='');document.getElementById('adminCode').value='';
+    }catch(err){status.className='status error';status.textContent=err.message||'Could not save the roster.';}
+    finally{button.disabled=false;}
+  });
+});
+</script>
+</body></html>
