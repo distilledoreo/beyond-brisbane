@@ -191,6 +191,7 @@
       segments=[];start=null;end=null;renderDraft();
       banner('Submitted! Everyone in the group can now view your itinerary idea.','success');
       await reload();
+      window.dispatchEvent(new Event('bb:suggestions-changed'));
     }catch(e){if(session===here)banner('Submission failed: '+(e.message||'Please try again.'),'error');}
     finally{working=false;renderDraft();}
   }
@@ -204,7 +205,7 @@
       });
       if(error)throw error;
       if(data!==true)throw Error('Only your own submissions can be withdrawn.');
-      if(session===here){banner('Suggestion withdrawn.','success');await reload();}
+      if(session===here){banner('Suggestion withdrawn.','success');await reload();window.dispatchEvent(new Event('bb:suggestions-changed'));}
     }catch(e){if(session===here)banner('Could not withdraw suggestion: '+(e.message||'Try again.'),'error');}
     finally{working=false;}
   }
