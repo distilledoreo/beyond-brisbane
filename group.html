@@ -26,21 +26,18 @@
   <main class="main wrap">
     <div class="status-strip"><div><span id="statusDot" class="status-dot"></span><span id="statusText" class="status-line">Checking voting service…</span></div><div class="meta" id="identityText">No names or individual votes appear on the leaderboard.</div></div>
     <div class="notice" id="alert" role="status" aria-live="polite" hidden></div>
-    <section id="setupView" class="card" hidden><p class="overline">COMING SOON</p><h2>Group voting isn't connected yet.</h2><p class="subhead">The private voting backend is still being set up. The eight itineraries remain available to browse while this page is activated.</p><a class="btn" href="index.html#itineraries">EXPLORE ITINERARIES</a></section>
-    <section id="loginView" class="card" hidden><p class="overline">PRIVATE GROUP ACCESS</p><h2>Sign in to rank the itineraries.</h2><p class="subhead">Enter your name for this screen only, and a valid email to receive a secure sign-in link. We never send your first or last name to the database. Only verified group members can vote or see the results.</p>
-      <form id="loginForm" class="formgrid">
-        <div class="field"><label for="firstName">First name</label><input id="firstName" type="text" autocomplete="given-name" maxlength="60" required></div>
-        <div class="field"><label for="lastName">Last name</label><input id="lastName" type="text" autocomplete="family-name" maxlength="60" required></div>
-        <div class="field full"><label for="loginEmail">Email address</label><input id="loginEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div>
-        <div class="field full"><div class="buttonrow"><button class="btn" id="loginButton" type="submit">SEND PRIVATE SIGN-IN LINK →</button></div></div>
-      </form>
-      <div class="privacy-flag"><span aria-hidden="true">◈</span><div><strong>Privacy by design</strong>Your first and last name remain on this page only; they are never included in a vote, leaderboard entry, database record, or public API response. Your email is held privately by the authentication provider.</div></div>
-      <p class="smallprint login-note">A first and last name alone is not a secure password. The email link verifies that someone actually controls the account used to save their choices.</p>
-    </section>
-    <section id="inviteView" class="card" hidden><p class="overline">ONE LAST STEP</p><h2>Enter the private group invite code.</h2><p class="subhead">Get the code directly from the trip organizer. It is not published in the website's code, and you'll only need to use it once with this account.</p>
-      <form id="inviteForm" class="buttonrow"><label class="visually-hidden" for="inviteCode">Private invite code</label><input id="inviteCode" type="password" required autocomplete="off" placeholder="Private group code" style="min-height:46px;flex:1;min-width:170px;padding:12px;border:1px solid #cbd6d8"><button class="btn" type="submit" id="joinButton">JOIN GROUP →</button></form>
-      <p class="smallprint">Only members with both a verified email and the invitation code can participate. Do not post the invitation code publicly.</p>
-    </section>
+    <section id="setupView" class="card" hidden><p class="overline">COMING SOON</p><h2>Group voting isn't connected yet.</h2><p class="subhead">The connection is temporarily unavailable. Please try refreshing this page.</p><a class="btn" href="index.html#itineraries">EXPLORE ITINERARIES</a></section>
+    <section id="loginView" class="card" hidden><p class="overline">PRIVATE GROUP ACCESS</p><h2>Sign in to rank the itineraries.</h2>
+<p class="subhead">Enter your first and last name on this screen, then your unique member code. Names are checked on your device but <strong>never sent or saved</strong>. Your private code is what securely identifies your ballot.</p>
+<form id="loginForm" class="formgrid">
+<div class="field"><label for="firstName">First name</label><input id="firstName" type="text" autocomplete="given-name" maxlength="60" required></div>
+<div class="field"><label for="lastName">Last name</label><input id="lastName" type="text" autocomplete="family-name" maxlength="60" required></div>
+<div class="field full"><label for="accessCode">Your private member code</label><input id="accessCode" type="password" autocomplete="off" maxlength="100" required placeholder="BB27-…"></div>
+<div class="field full"><div class="buttonrow"><button class="btn" id="loginButton" type="submit">OPEN MY PRIVATE BALLOT →</button></div></div>
+</form>
+<div class="privacy-flag"><span aria-hidden="true">◈</span><div><strong>Private by design</strong>No names or emails are stored in this voting database. Each person's vote is protected by their unique access code. The group leaderboard shows combined results only.</div></div>
+<p class="smallprint login-note">Keep your personal code private, as you would a password. You can sign in from another device using the same code and change your preferences any time.</p>
+</section>
     <div id="votingView" hidden>
       <div class="two-up">
         <section class="card" aria-labelledby="my-tier-title"><p class="overline">YOUR BALLOT</p><h2 id="my-tier-title">Make your tier list.</h2><p class="subhead">Drag cards into a tier, or use each card's dropdown (also works on phones). Assign all eight itineraries before saving. Several options can share the same tier.</p>
@@ -51,7 +48,7 @@
         </section>
         <section class="card" aria-labelledby="leaderboard-title"><p class="overline">LIVE GROUP OPINION</p><h2 id="leaderboard-title">The leaderboard.</h2><p class="subhead">Ranked by average tier score, from 5 points for S to 1 for D. Individual ballots and members' names are never displayed.</p><div id="leaderboard" aria-live="polite"><p class="no-data">Loading group preferences…</p></div><div class="countline" id="countline"></div><button class="btn secondary" id="refreshBoard" type="button" style="margin-top:15px">REFRESH RESULTS</button></section>
       </div>
-      <p class="section-privacy">Only authenticated, invited members can see aggregate results. No names are stored by this voting system. In a very small group, people may still infer someone's preferences from changes to aggregate scores; this cannot be completely prevented by removing names.</p>
+      <p class="section-privacy">Only holders of one of the eight individual private access codes can see group results. No names or email addresses are stored by this voting system. In a very small group, people may still infer someone's preferences from changes to aggregate scores; this cannot be completely prevented by removing names.</p>
     </div>
   </main>
   <footer class="foot"><div class="wrap"><strong>BEYOND BRISBANE 2027</strong><span>Independent travel-planning site · Not an official JW Event service</span></div></footer>
@@ -59,217 +56,11 @@
 // Public Supabase URL and publishable key only. NEVER put a service-role/secret key in this file.
 // Filled in when the dedicated voting project has been created.
 window.BEYOND_BRISBANE_VOTING = {
-  url: '',
-  publishableKey: ''
+  url: 'https://forjvxdumfenuardlyci.supabase.co',
+  publishableKey: 'sb_publishable_NW3IlBA3FaNVDchM03pGLg_Ah2x4G7h'
 };
 
   </script>
-  <script>
-'use strict';
-(() => {
-  const options = [
-    {id:'fiji', title:'Fiji', sub:'The Tropical Finale', photo:'https://images.unsplash.com/photo-1730946450247-a09fa58fee94?auto=format&fit=crop&w=180&q=70'},
-    {id:'queenstown',title:'Queenstown & Auckland',sub:'Alpine Adventure',photo:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=180&q=70'},
-    {id:'bali',title:'Bali & Singapore',sub:'Tropical + Futuristic',photo:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=180&q=70'},
-    {id:'cairns',title:'Cairns & Port Douglas',sub:'Natural Wonders',photo:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=180&q=70'},
-    {id:'japan',title:'Tokyo & Hakone',sub:'Japan Experience',photo:'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=180&q=70'},
-    {id:'darwin',title:'Darwin, Kakadu & Singapore',sub:'Wilderness + City',photo:'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=180&q=70'},
-    {id:'vietnam',title:'Vietnam & Singapore',sub:'Cultural Adventure',photo:'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=180&q=70'},
-    {id:'melbourne',title:'Melbourne & Singapore',sub:'Coastal Contrast',photo:'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=180&q=70'}
-  ];
-  const tiers = ['S','A','B','C','D'];
-  const points = {S:5,A:4,B:3,C:2,D:1};
-  const $ = id => document.getElementById(id);
-  let client = null;
-  let channel = null;
-  let session = null;
-  let saved = null;
-  let draft = Object.fromEntries(options.map(o => [o.id, '']));
-  let refreshTimer = null;
-  let booted = false;
-
-  function visible(view) {
-    ['setupView','loginView','inviteView','votingView'].forEach(v => $(v).hidden = v !== view);
-    $('signout').hidden = !session;
-  }
-  function state(text, connected=false) {
-    $('statusText').textContent = text;
-    $('statusDot').classList.toggle('live', connected);
-  }
-  function alertMessage(text='', type='') {
-    const el=$('alert');el.textContent=text;el.className='notice'+(type?' '+type:'');el.hidden=!text;
-  }
-  function normalized(ballot) {
-    const out=Object.fromEntries(options.map(o=>[o.id, '']));
-    if(ballot && typeof ballot === 'object') for(const o of options) if(tiers.includes(ballot[o.id])) out[o.id]=ballot[o.id];
-    return out;
-  }
-  function complete(ballot) { return options.every(o=>tiers.includes(ballot[o.id])); }
-  function modified() { return JSON.stringify(draft)!==JSON.stringify(saved); }
-  function renderTierBoard() {
-    const board=$('tierBoard');board.replaceChildren();
-    for(const tier of [...tiers,'']) {
-      const row=document.createElement('div');row.className='tier-row';row.dataset.tier=tier;
-      const label=document.createElement('div');label.className='tier-grade '+(tier?tier.toLowerCase():'u');label.textContent=tier||'NEW';
-      row.appendChild(label);
-      const cards=document.createElement('div');cards.className='tier-cards';
-      const matching=options.filter(o=>draft[o.id]===tier);
-      if (!matching.length) {
-        const blank=document.createElement('span');blank.className='empty-tier';blank.textContent=tier?'Drop an itinerary here':'All options ranked';cards.append(blank);
-      }
-      for(const o of matching) {
-        const tile=document.createElement('div');tile.className='mini-trip';tile.draggable=true;tile.dataset.id=o.id;
-        tile.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',o.id);e.dataTransfer.effectAllowed='move'});
-        const img=document.createElement('img');img.src=o.photo;img.alt='';img.loading='lazy';
-        const words=document.createElement('span');
-        const strong=document.createElement('strong');strong.textContent=o.title;
-        const small=document.createElement('small');small.textContent=o.sub;
-        words.append(strong,small);
-        const select=document.createElement('select'); select.setAttribute('aria-label','Tier for '+o.title);
-        for(const choice of [['','—'],...tiers.map(t=>[t,t])]){
-          const opt=document.createElement('option');opt.value=choice[0];opt.textContent=choice[1];select.append(opt);
-        }
-        select.value=draft[o.id];select.addEventListener('change',()=>changeTier(o.id,select.value));
-        tile.append(img,words,select);cards.append(tile);
-      }
-      row.addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('text/plain')){e.preventDefault();row.classList.add('over')}});
-      row.addEventListener('dragleave',e=>{if(!row.contains(e.relatedTarget))row.classList.remove('over')});
-      row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('over');const id=e.dataTransfer.getData('text/plain');if(options.some(o=>o.id===id))changeTier(id,tier)});
-      row.append(cards);board.append(row);
-    }
-    const count=options.filter(o=>tiers.includes(draft[o.id])).length;
-    $('completionStatus').textContent = count+' of 8 ranked';
-    $('saveVotes').disabled = !complete(draft) || !modified();
-    $('saveStatus').textContent = modified() ? (complete(draft) ? 'Unsaved changes' : 'Rank all eight to save') : 'All changes saved';
-  }
-  function changeTier(id,tier) { if(!tiers.includes(tier)&&tier!=='')return;draft[id]=tier;renderTierBoard(); }
-  function leaderboardRows(rows) {
-    const root=$('leaderboard');root.replaceChildren();
-    if(!rows?.length){root.textContent='No group results available yet.';return;}
-    const total=Math.max(0,...rows.map(r=>Number(r.voter_count)||0));
-    $('countline').textContent=total===1?'1 group member has saved a complete tier list.':total+' group members have saved complete tier lists.';
-    if(!total){const blank=document.createElement('p');blank.className='no-data';blank.textContent='No votes saved yet. Be the first to rank the options.';root.append(blank);return;}
-    const sorted=[...rows].sort((a,b)=>{
-      const aa=Number(a.total_points)/(Number(a.voter_count)||1),bb=Number(b.total_points)/(Number(b.voter_count)||1);
-      return bb-aa || options.findIndex(o=>o.id===a.route_id)-options.findIndex(o=>o.id===b.route_id);
-    });
-    for(let i=0;i<sorted.length;i++){
-      const r=sorted[i],o=options.find(x=>x.id===r.route_id);if(!o)continue;
-      const avg=Number(r.voter_count)?Number(r.total_points)/Number(r.voter_count):0;
-      const outer=document.createElement('div');outer.className='result-row';
-      const rank=document.createElement('div');rank.className='rankno';rank.textContent=String(i+1).padStart(2,'0');
-      const content=document.createElement('div');
-      const name=document.createElement('div');name.className='result-label';name.textContent=o.title;
-      const meter=document.createElement('div');meter.className='meter';const fill=document.createElement('span');fill.style.width=(avg/5*100).toFixed(2)+'%';meter.append(fill);
-      const detail=document.createElement('div');detail.className='result-detail';
-      const main=document.createElement('span');main.textContent=o.sub;
-      const tiersEl=document.createElement('span');tiersEl.textContent=`S ${r.tier_s} · A ${r.tier_a} · B ${r.tier_b} · C ${r.tier_c} · D ${r.tier_d}`;
-      detail.append(main,tiersEl);content.append(name,meter,detail);
-      const score=document.createElement('div');score.className='result-value';score.textContent=avg.toFixed(2);
-      outer.append(rank,content,score);root.append(outer);
-    }
-  }
-  async function refreshLeaderboard() {
-    if (!client||!session)return;
-    const {data,error}=await client.from('voting_totals').select('route_id,voter_count,total_points,tier_s,tier_a,tier_b,tier_c,tier_d');
-    if(error){alertMessage('Could not refresh the leaderboard: '+error.message,'error');return;}
-    leaderboardRows(data);
-  }
-  function listen() {
-    if(channel){client.removeChannel(channel);channel=null;}
-    channel=client.channel('beyond-brisbane-leaderboard')
-      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'voting_totals'},()=>{
-        if(refreshTimer)clearTimeout(refreshTimer);
-        refreshTimer=setTimeout(refreshLeaderboard,250);
-      }).subscribe(status=>state(status==='SUBSCRIBED'?'Live group leaderboard':'Connected · updates may be delayed',status==='SUBSCRIBED'));
-  }
-  async function loadBallot() {
-    const {data,error}=await client.from('voting_ballots').select('tiers').maybeSingle();
-    if(error)throw error;
-    saved=data?normalized(data.tiers):null;
-    draft=data?normalized(data.tiers):normalized(null);
-    renderTierBoard();
-  }
-  async function syncMember() {
-    if(!session) { visible('loginView');state('Sign in to begin');return; }
-    $('identityText').textContent='Signed in with a verified email · your name is never uploaded';
-    const {data,error}=await client.from('voting_members').select('user_id').limit(1);
-    if(error){alertMessage('Could not check group access: '+error.message,'error');visible('inviteView');return;}
-    if(!data?.length){visible('inviteView');state('Verified · group invitation required');return;}
-    visible('votingView');state('Loading your private ballot…');
-    try{await loadBallot();await refreshLeaderboard();listen();}catch(e){alertMessage('Unable to load voting: '+e.message,'error');}
-  }
-  async function signin(event) {
-    event.preventDefault();if(!client)return;
-    const first=$('firstName').value.trim(),last=$('lastName').value.trim(),email=$('loginEmail').value.trim();
-    if(!first||!last||!email)return;
-    const btn=$('loginButton');btn.disabled=true;alertMessage('');
-    try{
-      // first and last names are deliberately NOT sent to Supabase or stored anywhere.
-      const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
-      if(error)throw error;
-      alertMessage('Check your email for the one-time sign-in link. It will bring you back to this page.','success');
-      $('firstName').value='';$('lastName').value='';
-    }catch(e){alertMessage(e.message||'Unable to send sign-in email','error');}finally{btn.disabled=false;}
-  }
-  async function join(event) {
-    event.preventDefault();if(!client||!session)return;
-    const code=$('inviteCode').value;const btn=$('joinButton');btn.disabled=true;alertMessage('');
-    try{
-      const {data,error}=await client.rpc('join_voting_group',{p_invite_code:code});
-      $('inviteCode').value='';
-      if(error)throw error;
-      if(!data){alertMessage('That invite code was not accepted. Ask the trip organizer for the private code.','error');return;}
-      alertMessage('Your account is now part of the group. You can save or update your ranking anytime.','success');
-      await syncMember();
-    }catch(e){alertMessage('Unable to join: '+e.message,'error');}finally{btn.disabled=false;}
-  }
-  async function save() {
-    if(!complete(draft)||!session||!client)return;
-    const btn=$('saveVotes');btn.disabled=true;$('saveStatus').textContent='Saving…';alertMessage('');
-    const payload=structuredClone(draft);
-    try{
-      const {error}=await client.from('voting_ballots').upsert({user_id:session.user.id,tiers:payload},{onConflict:'user_id'});
-      if(error)throw error;
-      saved=normalized(payload);
-      alertMessage('Your tier list has been saved. You can revise it at any time.','success');
-      renderTierBoard();await refreshLeaderboard();
-    }catch(e){alertMessage('Your ballot was not saved: '+e.message,'error');renderTierBoard();}
-  }
-  async function signout() {
-    if(!client)return;
-    await client.auth.signOut();
-    session=null;saved=null;draft=normalized(null);
-    if(channel){client.removeChannel(channel);channel=null;}
-    $('identityText').textContent='No names or individual votes appear on the leaderboard.';
-    alertMessage('You have signed out. Your saved ballot remains private and can be edited after you sign back in.','success');
-    visible('loginView');state('Signed out');
-  }
-  async function init() {
-    if(booted)return;booted=true;
-    $('loginForm').addEventListener('submit',signin);
-    $('inviteForm').addEventListener('submit',join);
-    $('saveVotes').addEventListener('click',save);
-    $('refreshBoard').addEventListener('click',refreshLeaderboard);
-    $('resetVotes').addEventListener('click',()=>{draft=normalized(null);renderTierBoard();alertMessage('Draft cleared. Your saved preferences have not been changed.');});
-    $('signout').addEventListener('click',signout);
-    const cfg=window.BEYOND_BRISBANE_VOTING||{};
-    if(!/^https:\/\/.+\.supabase\.co$/.test(cfg.url||'')||!cfg.publishableKey){visible('setupView');state('Voting service not configured');return;}
-    if(!window.supabase?.createClient){visible('setupView');state('Voting library unavailable');return;}
-    client=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}});
-    client.auth.onAuthStateChange((_event,newSession)=>{
-      session=newSession;
-      if(_event==='SIGNED_OUT'){visible('loginView');state('Signed out');}
-    });
-    try{
-      const {data,error}=await client.auth.getSession();if(error)throw error;
-      session=data.session;
-      await syncMember();
-    }catch(e){visible('loginView');alertMessage('Login could not initialize: '+e.message,'error');state('Connection problem');}
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-})();
-
-  </script>
+  <script src="group-code.js" defer></script>
 </body>
 </html>
