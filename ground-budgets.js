@@ -1,7 +1,7 @@
 /* Beyond Brisbane 2027 — transparent, non-live ground budget model.
  * USD planning assumptions researched 2026-11-04. These are NOT 2027 quotes.
  * One party of six adults; three hotel rooms (two adults each) versus one
- * verified six-person / three-bedroom whole-home rental, where legal.
+ * modeled six-person / three-bedroom whole-home rental, where legal.
  * Nightly hotel benchmarks exclude an assumed 12% tax/fee allowance.
  * Rental nightly target includes recurring fees; one-time cleaning is extra.
  * Flights are NOT included here: live Google Flights prices come separately.
@@ -9,6 +9,9 @@
 (()=>{
 'use strict';
 const MEMBERS=6, HOTEL_ROOMS=3, HOTEL_FEES=1.12;
+// Confirmed booking for all six, converted using Nov 4, 2026 reference FX.
+const BRISBANE_BOOKING={audTotal:10700,audUsd:0.701513,fxDate:'2026-11-04'};
+const brisbaneBookedUSD=BRISBANE_BOOKING.audTotal*BRISBANE_BOOKING.audUsd;
 const EXTRAS={insurance:150,baggage:140,travelMeals:90,entryAustralia:25};
 const COMMON=['brisbane','sydney'];
 const ROUTES={
@@ -30,8 +33,8 @@ const STOPS={
   hotelNight:185,homeNight:null,homeFee:0,
   foodDaily:50,localDaily:14,activities:55,transfers:45,
   source:'https://www.budgetyourtrip.com/australia/brisbane/',
-  note:'Convention hotel is a fixed stop. Three shared rooms are a placeholder until the actual delegate rate is known.',
-  legal:'Hotel allocation retained; an alternative rental is not assumed.'
+  note:'Hotel booked for A$10,700 in total for six travelers. USD is a reference-rate conversion, not a statement of the bank charge.',
+  legal:'Confirmed hotel group cost split evenly among six. No estimated nightly rate or extra hotel fees are added.'
  },
  sydney:{
   place:'Sydney',dates:'Jul 6–10',nights:4,
@@ -140,24 +143,19 @@ const STOPS={
 };
 const ENTRY={fiji:0,queenstown:70,bali:40,cairns:0,japan:0,darwin:0,vietnam:25,melbourne:0};
 const fmt=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
-const rateKey='beyondbrisbane-convention-room-night';
-let conventionHotel=185;
-try{const val=localStorage.getItem(rateKey);if(val!==null){
- const n=Number(val);if(Number.isFinite(n)&&n>=0&&n<=2500)conventionHotel=n;
-}}catch{}
-function setConventionRate(n){
- n=Number(n);if(!Number.isFinite(n)||n<0||n>2500)return false;
- conventionHotel=n;try{localStorage.setItem(rateKey,String(n));}catch{}return true;
-}
 function lodging(id){
  const o=STOPS[id];if(!o)throw Error('Invalid stop '+id);
- const roomNight=id==='brisbane'?conventionHotel:o.hotelNight;
- const hotel=roomNight*HOTEL_ROOMS*o.nights*HOTEL_FEES;
+ const booked=id==='brisbane';
+ const roomNight=booked?null:o.hotelNight;
+ const hotel=booked?brisbaneBookedUSD:roomNight*HOTEL_ROOMS*o.nights*HOTEL_FEES;
  const home=o.homeNight===null?null:o.homeNight*o.nights+o.homeFee;
  // For marginal savings under 5%, favor hotels over cleaning and turnover risk.
  const mode=home!==null&&home<hotel*.95?'home':'hotel';
  const selected=mode==='home'?home:hotel;
- return {id,place:o.place,dates:o.dates,nights:o.nights,mode,selected,hotel,home,
+ return {id,place:o.place,dates:o.dates,nights:o.nights,mode,selected,hotel,home,booked,
+  bookedAud:booked?BRISBANE_BOOKING.audTotal:null,
+  audUsd:booked?BRISBANE_BOOKING.audUsd:null,
+  fxDate:booked?BRISBANE_BOOKING.fxDate:null,
   hotelNight:roomNight,homeNight:o.homeNight,homeFee:o.homeFee,
   perPerson:selected/MEMBERS,note:o.note,legal:o.legal,source:o.source,
   alternative:mode==='home'?hotel:home};
@@ -172,16 +170,18 @@ function forTrip(id){
  const activities=ids.reduce((sum,s)=>sum+STOPS[s].activities,0);
  const insurance=EXTRAS.insurance, baggage=EXTRAS.baggage,
   travelMeals=EXTRAS.travelMeals,entry=EXTRAS.entryAustralia+(ENTRY[id]||0);
- const contingency=Math.round((lodgingSum+food+local+activities)*.10);
+ // Don't apply an uncertainty buffer to the already-booked Brisbane hotel.
+ const bookedLodging=stays.filter(s=>s.booked).reduce((sum,s)=>sum+s.perPerson,0);
+ const contingency=Math.round((lodgingSum-bookedLodging+food+local+activities)*.10);
  const nonAirfare=lodgingSum+food+local+activities+insurance+baggage+travelMeals+entry+contingency;
  return {id,stays,lodging:lodgingSum,food,local,activities,insurance,baggage,
   travelMeals,entry,contingency,nonAirfare,
   travelNights:stays.reduce((a,s)=>a+s.nights,0),
-  assumptions:'Six adults, three hotel rooms (two per room) or one licensed six-guest three-bedroom rental, whichever has the lower modeled all-in cost.',
+  assumptions:'Confirmed Brisbane A$10,700 booking split six ways. Unbooked stays compare three shared hotel rooms with legal six-guest rentals.',
   sourceDate:'November 4, 2026'};
 }
 window.BeyondGroundBudget={
  MEMBERS,HOTEL_ROOMS,HOTEL_FEES,STOPS,ROUTES,ENTRY,forTrip,lodging,fmt,
- conventionRate:()=>conventionHotel,setConventionRate
+ BRISBANE_BOOKING,brisbaneBookedUSD
 };
 })();

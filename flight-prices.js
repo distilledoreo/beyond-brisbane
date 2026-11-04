@@ -52,17 +52,22 @@ function lodgingDetails(root,stay){
  item.append(title);
  const mode=document.createElement('p');
  mode.className='bb-lodging-winner';
- mode.textContent=(stay.mode==='home'?'MODELED LOWEST: THREE-BEDROOM GROUP RENTAL':
-   stay.id==='brisbane'?'CONVENTION HOTEL · RATE ESTIMATE':'MODELED LOWEST: THREE SHARED HOTEL ROOMS')+
-   ' · '+money(Math.round(stay.perPerson))+' / adult';
+ mode.textContent=(stay.booked?'Booked · Brisbane hotel':
+   stay.mode==='home'?'Six-person apartment or house':'Three shared hotel rooms')+
+   ' · '+money(Math.round(stay.perPerson))+' per person';
  item.append(mode);
  const comparison=document.createElement('p');
- comparison.textContent='Hotel: '+money(Math.round(stay.hotel))+' total (3 rooms for group)'+
-   (stay.home===null?' · Group rental not used':'  |  Six-person rental: '+money(Math.round(stay.home))+' total');
+ comparison.textContent=stay.booked?
+   'A$'+stay.bookedAud.toLocaleString('en-US')+' booked for six · '+money(Math.round(stay.hotel))+
+   ' USD at 1 AUD = '+stay.audUsd+' USD ('+stay.fxDate+')':
+   'Three hotel rooms: '+money(Math.round(stay.hotel))+' for six'+
+   (stay.home===null?' · Rental not included':' · Six-person rental: '+money(Math.round(stay.home)));
  item.append(comparison);
  const note=document.createElement('p');note.textContent=stay.note;item.append(note);
  const source=document.createElement('a');source.href=stay.source;source.target='_blank';
- source.rel='noopener noreferrer';source.textContent='Reference for local travel costs ↗';
+ source.rel='noopener noreferrer';
+ if(stay.booked){source.href='https://calculatorlib.com/currency-converter/aud-to-usd/history';source.textContent='AUD to USD reference';}
+ else source.textContent='Local cost reference';
  item.append(source);root.append(item);
 }
 function decorate(){
@@ -75,7 +80,7 @@ function decorate(){
   box.replaceChildren();
   const b=ground(id),f=price(id),full=total(id),span=range(id);
   const label=document.createElement('span');label.className='bb-fare-label';
-  label.textContent='ESTIMATED ENTIRE TRIP / PERSON · SIX ADULTS';
+  label.textContent='Estimated trip cost per person';
   const value=document.createElement('strong');value.className='bb-fare-price';
   value.textContent=full===null?'—':'≈'+money(Math.round(full/50)*50);
   const sub=document.createElement('small');sub.className='bb-fare-status';
@@ -95,7 +100,7 @@ function decorate(){
   if(b){
    const details=document.createElement('details');details.className='bb-budget-breakdown';
    const summary=document.createElement('summary');
-   summary.textContent='Full cost breakdown + six-person room-sharing comparison';
+   summary.textContent='Cost breakdown and room-sharing options';
    details.append(summary);
    costRow(details,'Flights — lowest separate one-way fares',f??NaN,info(id));
    costRow(details,'Accommodations (shared six ways)',b.lodging);
@@ -103,13 +108,13 @@ function decorate(){
    costRow(details,'Local transport + transfers',b.local);
    costRow(details,'Excursions + attractions',b.activities);
    costRow(details,'Insurance + baggage + travel-day meals + entry',b.insurance+b.baggage+b.travelMeals+b.entry);
-   costRow(details,'10% ground contingency',b.contingency);
+   costRow(details,'10% buffer on unbooked ground expenses',b.contingency);
    const lodgingTitle=document.createElement('h5');lodgingTitle.className='bb-lodging-heading';
-   lodgingTitle.textContent='Best-value modeled lodging arrangements · six adults';
+   lodgingTitle.textContent='Accommodation by destination';
    details.append(lodgingTitle);
    b.stays.forEach(stay=>lodgingDetails(details,stay));
    const warning=document.createElement('p');warning.className='bb-budget-caveat';
-   warning.textContent='Prices shown are 2026 research-based planning assumptions, not live 2027 room quotes. Three rooms means two travelers per room; a rental must legally accommodate six adults with agreed sleeping arrangements. The lowest modeled option is not guaranteed available or bookable. Hotel comparison includes a 12% fees allowance; rentals include one-time cleaning estimates.';
+   warning.textContent='Brisbane lodging is confirmed at A$10,700 for the group, converted at the November 4 reference rate. Other lodging costs are planning estimates, not live July 2027 quotes. Three hotel rooms assume two adults per room; a rental must legally accommodate six. The 12% hotel fee allowance applies only to unbooked stays.';
    details.append(warning);box.append(details);
   }
   if(Array.isArray(q?.legs)&&q.legs.length){
@@ -185,18 +190,6 @@ async function refresh(){
 function init(){
  if(!$('fareHub'))return;
  window.addEventListener('bb:cards-rendered',decorate);
- const input=$('bbConventionRate');
- const b=window.BeyondGroundBudget;
- if(b&&input)input.value=String(b.conventionRate());
- input?.addEventListener('change',()=>{
-  const val=Number(input.value);
-  if(!b?.setConventionRate(val)){
-   input.value=String(b?.conventionRate?.()??185);
-   status('Enter a valid convention hotel cost per room per night (USD).');return;
-  }
-  decorate();window.dispatchEvent(new Event('bb:prices-changed'));
-  status('Convention room-rate assumption saved on this device; group costs recalculated.');
- });
  $('bbRefresh')?.addEventListener('click',refresh);
  $('bbCopyRoutes')?.addEventListener('click',()=>{
   const lines=IDS.map(id=>id.toUpperCase()+'\n'+ROUTES[id].join('\n')).join('\n\n');

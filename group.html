@@ -15,15 +15,16 @@
     @media(max-width:900px){.two-up,.shell{grid-template-columns:1fr}.hero .wrap{padding:54px 0 62px}.headnav{gap:15px}}@media(max-width:590px){.wrap{width:min(100% - 28px,1120px)}.head-inner{min-height:70px}.brand strong{font-size:13px}.brand small{font-size:8px}.brand-mark{width:34px;height:34px;font-size:21px}.headnav a{font-size:10px}.card{padding:22px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.mini-trip{min-width:145px}.mini-trip img{width:36px;height:36px}.mini-trip select{width:51px}.tier-row{grid-template-columns:43px minmax(0,1fr)}.tier-grade{font-size:22px}.status-strip{align-items:flex-start;flex-direction:column}.hero h1{font-size:42px}.headnav{gap:8px}.topnote{font-size:8px}}
   </style>
   <link rel="stylesheet" href="group-suggestions.css?v=3">
+  <link rel="stylesheet" href="site-refinement.css?v=1">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js" defer></script>
 </head>
-<body>
+<body class="site-group">
   <div class="topnote"><div class="wrap">BEYOND BRISBANE 2027 · UNOFFICIAL GROUP TRAVEL PLANNING</div></div>
   <header class="head"><div class="wrap head-inner">
     <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">◈</span><span><strong>BEYOND BRISBANE</strong><small>2027 TRAVEL COLLECTION</small></span></a>
     <nav class="headnav" aria-label="Main navigation"><a href="index.html#itineraries">ITINERARIES</a><a href="group.html" aria-current="page">GROUP CHOICES</a><button type="button" id="signout" class="tiny-button" hidden>SIGN OUT</button></nav>
   </div></header>
-  <section class="hero"><div class="wrap"><span class="hero-tag">THE GROUP DECIDES</span><h1>Eight original ideas.<br><em>Room for yours, too.</em></h1><p>Build your own tier list, save your choices privately, and see the group's evolving favorites. Change your mind whenever you want.</p></div></section>
+  <section class="hero"><div class="wrap"><h1>Choose where we go next.</h1><p>Rank the itineraries or submit your own route. Votes stay private; the group results update as people save.</p></div></section>
   <main class="main wrap">
     <div class="status-strip"><div><span id="statusDot" class="status-dot"></span><span id="statusText" class="status-line">Checking voting service…</span></div><div class="meta" id="identityText">No names or individual votes appear on the leaderboard.</div></div>
     <div class="notice" id="alert" role="status" aria-live="polite" hidden></div>
@@ -51,15 +52,15 @@
         <section class="card" aria-labelledby="leaderboard-title"><p class="overline">LIVE GROUP OPINION</p><h2 id="leaderboard-title">The leaderboard.</h2><p class="subhead">Ranked by average tier score, from 5 points for S to 1 for D. Individual ballots and members' names are never displayed. Newly submitted itineraries are included automatically; those without ratings appear at the bottom. Each group idea shows how many members have rated it.</p><div id="leaderboard" aria-live="polite"><p class="no-data">Loading group preferences…</p></div><div class="countline" id="countline"></div><button class="btn secondary" id="refreshBoard" type="button" style="margin-top:15px">REFRESH RESULTS</button></section>
       </div>
       <div class="ss-jump">
-        <div><strong>Have another destination in mind?</strong><span>Build your own trip on the interactive calendar and share it with the group.</span></div>
-        <a class="btn secondary" href="#suggestions">BUILD AN ITINERARY →</a>
+        <div><strong>Want to suggest a route?</strong><span>Choose dates and destinations on the calendar.</span></div>
+        <a class="btn secondary" href="#suggestions">Build an itinerary</a>
       </div>
       <p class="section-privacy">The leaderboard shows aggregate scores only, never names or individual ballots. Names are transmitted to the voting service for private allowlist matching, not stored as readable text. With name-only sign-in, anyone knowing a registered traveler's name can impersonate them. In a small group, changes to totals may indirectly reveal preferences.</p>
       <section class="ss-section" id="suggestions" aria-labelledby="suggestTitle">
         <div class="ss-heading">
-          <p class="overline">YOUR IDEAS · OUR NEXT DESTINATION</p>
+          <p class="overline">SUGGESTED BY THE GROUP</p>
           <h2 id="suggestTitle">Submit an itinerary.</h2>
-          <p>Brisbane and Sydney are already locked in. Pick dates for the rest of the trip, type a destination, and add as many stops as you like. Then share your idea with the group—without changing the original eight itineraries. Submitted ideas also appear automatically as optional choices on the tier list.</p>
+          <p>Brisbane and Sydney are fixed. Choose dates after Sydney, add destinations, and submit. The route will appear in the group list and as an optional tier-list choice.</p>
         </div>
         <div class="ss-compose">
           <div class="ss-legend" aria-label="Calendar color legend">
@@ -90,9 +91,9 @@
         <div class="ss-group" aria-labelledby="groupIdeasTitle">
           <div class="ss-group-head">
             <div>
-              <p class="overline">OUR GROUP'S IDEAS</p>
-              <h3 id="groupIdeasTitle">Submitted itineraries</h3>
-              <p>Only the six registered travelers can view or contribute ideas. Submissions appear anonymously to the group; you can withdraw your own.</p>
+              <p class="overline">GROUP ROUTES</p>
+              <h3 id="groupIdeasTitle">Suggested itineraries</h3>
+              <p>All six travelers can view suggestions. Proposals are anonymous to other members, and you can withdraw yours.</p>
             </div>
             <div class="ss-group-actions">
               <span id="ssIdeaCount">0 suggestions</span>
