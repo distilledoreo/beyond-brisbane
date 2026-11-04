@@ -3,6 +3,7 @@
 (()=>{
 'use strict';
 const ENDPOINT='https://forjvxdumfenuardlyci.supabase.co/functions/v1/trip-fares';
+const APIKEY='sb_publishable_NW3IlBA3FaNVDchM03pGLg_Ah2x4G7h'; // Public, restricted browser key; not a secret.
 const IDS=['fiji','queenstown','bali','cairns','japan','darwin','vietnam','melbourne'];
 const ROUTES={
  fiji:['NYC → BNE · Jun 25','BNE → SYD · Jul 6','SYD → NAN · Jul 10','NAN → NYC · Jul 17'],
@@ -54,7 +55,7 @@ function decorate(){
 }
 function update(rows){if(Array.isArray(rows))for(const q of rows)if(IDS.includes(q?.route_id))quotes.set(q.route_id,q);decorate();}
 async function snapshot(){
- const res=await fetch(ENDPOINT,{cache:'no-store'});
+ const res=await fetch(ENDPOINT,{cache:'no-store',headers:{'apikey':APIKEY}});
  if(!res.ok)throw Error('Pricing service unavailable');
  const data=await res.json();connected=data.connected===true;update(data.quotes);
  status(connected?'Provider connected · fare snapshots cached for 36 hours.':'Google Flights pricing is not connected yet. No prices are being fabricated.');
@@ -71,7 +72,7 @@ async function refresh(){
   while(index<ids.length){
    const id=ids[index++];
    try{
-    const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({route_id:id})});
+    const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','apikey':APIKEY},body:JSON.stringify({route_id:id})});
     if(res.ok){const data=await res.json();if(data.quote)update([data.quote]);}
    }catch{}
    finished++;status('Checking flight options: '+finished+' / '+ids.length);
