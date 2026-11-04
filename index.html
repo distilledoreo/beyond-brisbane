@@ -98,7 +98,7 @@
     <span id="bbPriceCount" style="font-size:12px;color:#42646a"></span>
   </div>
   <p id="bbQuoteStatus" class="bb-price-status" role="status">Checking fare-service connection…</p>
-  <p class="bb-price-footnote">Quotes are retrieved from Google Flights data via SerpApi, cached for up to seven days. Prices are for one adult, not six guaranteed seats. The least expensive flight for each segment might not have workable connections or arrive in time for scheduled activities. Booking legs separately can create missed-connection risks; compare the complete trip before purchasing. Hotel and activity costs are <strong>not live</strong>; the optional land budget is a personal estimate added equally to each itinerary. Deal badges compare previous observed fare sums, not Google Flights' official price forecasts.</p>
+  <p class="bb-price-footnote">Quotes are retrieved from Google Flights data via SerpApi, cached for up to three days (subject to a monthly 180-search safeguard). Prices are for one adult, not six guaranteed seats. The least expensive flight for each segment might not have workable connections or arrive in time for scheduled activities. Booking legs separately can create missed-connection risks; compare the complete trip before purchasing. Hotel and activity costs are <strong>not live</strong>; the optional land budget is a personal estimate added equally to each itinerary. Deal badges compare previous observed fare sums, not Google Flights' official price forecasts.</p>
  </section>
         <div class="itinerary-grid" id="itineraryGrid" aria-live="polite"></div>
         <div class="empty-state" id="emptyState" hidden><h3>No itineraries found</h3><p>Try another destination or remove a filter.</p><button type="button" class="button button-outline-dark" id="resetFilters">SHOW ALL EIGHT</button></div>
@@ -368,6 +368,6 @@ render();
 window.addEventListener('bb:prices-changed',render);
 
   </script>
-  <script src="flight-prices.js?v=2" defer></script>
+  <script src="flight-prices.js?v=3" defer></script>
 </body>
 </html>
