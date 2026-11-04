@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-const options=[
+const originalOptions=[
 {id:'fiji',title:'Fiji',sub:'The Tropical Finale',photo:'https://images.unsplash.com/photo-1730946450247-a09fa58fee94?auto=format&fit=crop&w=180&q=70'},
 {id:'queenstown',title:'Queenstown & Auckland',sub:'Alpine Adventure',photo:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=180&q=70'},
 {id:'bali',title:'Bali & Singapore',sub:'Tropical + Futuristic',photo:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=180&q=70'},
@@ -9,6 +9,7 @@ const options=[
 {id:'darwin',title:'Darwin, Kakadu & Singapore',sub:'Wilderness + City',photo:'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=180&q=70'},
 {id:'vietnam',title:'Vietnam & Singapore',sub:'Cultural Adventure',photo:'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=180&q=70'},
 {id:'melbourne',title:'Melbourne & Singapore',sub:'Coastal Contrast',photo:'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=180&q=70'}];
+let options=originalOptions.slice();
 const tiers=['S','A','B','C','D'],$=id=>document.getElementById(id);
 const storage='beyond-brisbane-name-voting-v2';
 let client=null,memberIdentity=null,saved=null,draft={},poll=null;
@@ -17,19 +18,19 @@ function norm(obj){const r=blank();if(obj&&typeof obj==='object')for(const o of 
 function view(id){['setupView','loginView','inviteView','votingView'].forEach(k=>{if($(k))$(k).hidden=k!==id});$('signout').hidden=id!=='votingView';}
 function status(message,live=false){$('statusText').textContent=message;$('statusDot').classList.toggle('live',live);}
 function notice(message='',kind=''){$('alert').textContent=message;$('alert').className='notice'+(kind?' '+kind:'');$('alert').hidden=!message;}
-function changed(){return JSON.stringify(draft)!==JSON.stringify(saved);}
-function complete(){return options.every(o=>tiers.includes(draft[o.id]));}
+function changed(){return options.some(o=>draft[o.id]!==saved?.[o.id]);}
+function complete(){return originalOptions.every(o=>tiers.includes(draft[o.id]));}
 function move(id,t){if(!tiers.includes(t)&&t!=='')return;draft[id]=t;renderBallot();}
 function renderBallot(){
  const board=$('tierBoard');board.replaceChildren();
  for(const t of [...tiers,'']){
   const row=document.createElement('div');row.className='tier-row';row.dataset.tier=t;
-  const label=document.createElement('div');label.className='tier-grade '+(t?t.toLowerCase():'u');label.textContent=t||'NEW';row.append(label);
+  const label=document.createElement('div');label.className='tier-grade '+(t?t.toLowerCase():'u');label.textContent=t||'—';row.append(label);
   const cards=document.createElement('div');cards.className='tier-cards';
   const matches=options.filter(o=>draft[o.id]===t);
-  if(!matches.length){const hint=document.createElement('span');hint.className='empty-tier';hint.textContent=t?'Drop an itinerary here':'All options ranked';cards.append(hint);}
+  if(!matches.length){const hint=document.createElement('span');hint.className='empty-tier';hint.textContent=t?'Drop an itinerary here':'No unranked itineraries';cards.append(hint);}
   for(const o of matches){
-   const tile=document.createElement('div');tile.className='mini-trip';tile.draggable=true;
+   const tile=document.createElement('div');tile.className='mini-trip'+(o.isSuggestion?' group-suggestion-tile':'');tile.draggable=true;
    tile.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',o.id);e.dataTransfer.effectAllowed='move';});
    const img=document.createElement('img');img.src=o.photo;img.alt='';img.loading='lazy';
    const words=document.createElement('span'),strong=document.createElement('strong'),small=document.createElement('small');
@@ -43,10 +44,12 @@ function renderBallot(){
   row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('over');const id=e.dataTransfer.getData('text/plain');if(options.some(o=>o.id===id))move(id,t);});
   row.append(cards);board.append(row);
  }
- const count=options.filter(o=>tiers.includes(draft[o.id])).length;
- $('completionStatus').textContent=count+' of 8 ranked';
+ const originalRanked=originalOptions.filter(o=>tiers.includes(draft[o.id])).length;
+ const extraOptions=options.filter(o=>o.isSuggestion);
+ const extraRanked=extraOptions.filter(o=>tiers.includes(draft[o.id])).length;
+ $('completionStatus').textContent=originalRanked+' of 8 originals ranked'+(extraOptions.length?' · '+extraRanked+' of '+extraOptions.length+' group ideas ranked':'');
  $('saveVotes').disabled=!complete()||!changed();
- $('saveStatus').textContent=changed()?(complete()?'Unsaved changes':'Rank all eight to save'):'All changes saved';
+ $('saveStatus').textContent=changed()?(complete()?'Unsaved changes':'Rank all eight originals to save'):'All changes saved';
 }
 function renderLeaderboard(rows){
  const root=$('leaderboard');root.replaceChildren();
@@ -54,26 +57,84 @@ function renderLeaderboard(rows){
  const n=Math.max(0,...rows.map(r=>Number(r.voter_count)||0));
  $('countline').textContent=n===1?'1 group member has saved a complete tier list.':n+' group members have saved complete tier lists.';
  if(!n){const p=document.createElement('p');p.className='no-data';p.textContent='No ballots saved yet. Be the first!';root.append(p);return;}
- rows.sort((a,b)=>(Number(b.total_points)/(Number(b.voter_count)||1))-(Number(a.total_points)/(Number(a.voter_count)||1))||options.findIndex(o=>o.id===a.route_id)-options.findIndex(o=>o.id===b.route_id));
+ rows.sort((a,b)=>{
+  const bn=Number(b.voter_count)||0,an=Number(a.voter_count)||0;
+  if(!an||!bn)return Number(Boolean(bn))-Number(Boolean(an));
+  return (Number(b.total_points)/bn)-(Number(a.total_points)/an)||
+    options.findIndex(o=>o.id===a.route_id)-options.findIndex(o=>o.id===b.route_id);
+ });
  rows.forEach((r,i)=>{
   const o=options.find(x=>x.id===r.route_id);if(!o)return;
   const avg=Number(r.voter_count)?Number(r.total_points)/Number(r.voter_count):0;
-  const outer=document.createElement('div');outer.className='result-row';
+  const outer=document.createElement('div');outer.className='result-row'+(o.isSuggestion?' group-suggestion-result':'')+(!Number(r.voter_count)?' unranked-result':'');
   const rank=document.createElement('div');rank.className='rankno';rank.textContent=String(i+1).padStart(2,'0');
   const content=document.createElement('div'),name=document.createElement('div');name.className='result-label';name.textContent=o.title;
   const meter=document.createElement('div');meter.className='meter';const fill=document.createElement('span');fill.style.width=(avg/5*100).toFixed(1)+'%';meter.append(fill);
   const detail=document.createElement('div');detail.className='result-detail';
   const subt=document.createElement('span');subt.textContent=o.sub;
-  const dist=document.createElement('span');dist.textContent='S '+r.tier_s+' · A '+r.tier_a+' · B '+r.tier_b+' · C '+r.tier_c+' · D '+r.tier_d;
+  const dist=document.createElement('span');dist.textContent=(!Number(r.voter_count)?'No ratings yet · ':o.isSuggestion?Number(r.voter_count)+' rating(s) · ':'')+
+    'S '+r.tier_s+' · A '+r.tier_a+' · B '+r.tier_b+' · C '+r.tier_c+' · D '+r.tier_d;
   detail.append(subt,dist);content.append(name,meter,detail);
-  const score=document.createElement('div');score.className='result-value';score.textContent=avg.toFixed(2);
+  const score=document.createElement('div');score.className='result-value';score.textContent=Number(r.voter_count)?avg.toFixed(2):'—';
   outer.append(rank,content,score);root.append(outer);
  });
 }
+async function syncSuggestions(){
+ if(!memberIdentity)return;
+ const member=memberIdentity;
+ const params={p_first:member.first,p_last:member.last};
+ const [listResult,votesResult]=await Promise.all([
+  client.rpc('bb_list_itinerary_suggestions',params),
+  client.rpc('bb_name_get_suggestion_votes',params)
+ ]);
+ if(listResult.error)throw listResult.error;
+ if(votesResult.error)throw votesResult.error;
+ if(memberIdentity!==member)return;
+ const proposals=(Array.isArray(listResult.data)?listResult.data:[]).filter(p=>
+  p && /^[0-9a-f-]{36}$/.test(p.id||'') && Array.isArray(p.segments) && p.segments.length>0
+ ).reverse();
+ const suggestions=proposals.map(p=>{
+  const stops=p.segments.map(x=>String(x.destination||'').trim()).filter(Boolean);
+  const range=p.segments.map(x=>String(x.start||'').slice(5)+' to '+String(x.end||'').slice(5)).join(' · ');
+  return {
+   id:'suggestion:'+p.id,
+   title:stops.join(' + ').slice(0,260)||'Suggested trip',
+   sub:'GROUP IDEA · '+range,
+   photo:'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=180&q=70',
+   isSuggestion:true
+  };
+ });
+ const before=JSON.stringify(options.map(o=>[o.id,o.title,o.sub]));
+ options=originalOptions.concat(suggestions);
+ const validIds=new Set(options.map(o=>o.id));
+ for(const ballot of [saved,draft]){
+  if(!ballot)continue;
+  for(const id of Object.keys(ballot))if(!validIds.has(id))delete ballot[id];
+ }
+ const voteMap=votesResult.data&&typeof votesResult.data==='object'?votesResult.data:{};
+ for(const o of suggestions){
+  const savedTier=tiers.includes(voteMap[o.id])?voteMap[o.id]:'';
+  if(saved&&!Object.prototype.hasOwnProperty.call(saved,o.id))saved[o.id]=savedTier;
+  if(!Object.prototype.hasOwnProperty.call(draft,o.id))draft[o.id]=savedTier;
+ }
+ if(JSON.stringify(options.map(o=>[o.id,o.title,o.sub]))!==before)renderBallot();
+}
 async function refreshLeaderboard(){
  if(!memberIdentity)return;
- try{const {data,error}=await client.rpc('bb_name_get_totals');if(error)throw error;renderLeaderboard(data);status('Group leaderboard · refreshes every 10 seconds',true);}
- catch(e){status('Leaderboard unavailable');notice('Could not refresh group results: '+e.message,'error');}
+ try{
+  await syncSuggestions();
+  if(!memberIdentity)return;
+  const params={p_first:memberIdentity.first,p_last:memberIdentity.last};
+  const [regular,extra]=await Promise.all([
+   client.rpc('bb_name_get_totals'),
+   client.rpc('bb_name_get_suggestion_totals',params)
+  ]);
+  if(regular.error)throw regular.error;
+  if(extra.error)throw extra.error;
+  renderLeaderboard([...(Array.isArray(regular.data)?regular.data:[]),
+    ...(Array.isArray(extra.data)?extra.data:[])]);
+  status('Group leaderboard · refreshes every 10 seconds',true);
+ }catch(e){status('Leaderboard unavailable');notice('Could not refresh group results: '+e.message,'error');}
 }
 async function loadBallot(){
  const {data,error}=await client.rpc('bb_name_get_ballot',{p_first:memberIdentity.first,p_last:memberIdentity.last});if(error)throw error;
@@ -111,12 +172,12 @@ async function signin(e){
 async function save(){
  if(!memberIdentity||!complete())return;
  const btn=$('saveVotes');btn.disabled=true;$('saveStatus').textContent='Saving…';notice('');
- try{const {data,error}=await client.rpc('bb_name_save_ballot',{p_first:memberIdentity.first,p_last:memberIdentity.last,p_tiers:draft});if(error)throw error;if(data!==true)throw new Error('Your name was not recognized as an approved traveler.');
+ try{const {data,error}=await client.rpc('bb_name_save_group_ballot',{p_first:memberIdentity.first,p_last:memberIdentity.last,p_tiers:draft});if(error)throw error;if(data!==true)throw new Error('Your name was not recognized as an approved traveler.');
  saved=norm(draft);renderBallot();notice('Your vote is saved. You can edit it at any time.','success');await refreshLeaderboard();}
  catch(e){notice('Could not save your vote: '+e.message,'error');renderBallot();}
 }
 function signout(){
- if(poll)clearInterval(poll);poll=null;memberIdentity=null;localStorage.removeItem(storage);saved=null;draft=blank();view('loginView');
+ if(poll)clearInterval(poll);poll=null;memberIdentity=null;localStorage.removeItem(storage);options=originalOptions.slice();saved=null;draft=blank();view('loginView');
  window.dispatchEvent(new Event('bb:member-signed-out'));
  $('identityText').textContent='Names are never shown publicly or stored as plain text in the voting database.';
  status('Signed out');notice('Signed out. Your saved vote is still available using the same full name.','success');
@@ -129,6 +190,7 @@ async function init(){
  }
  $('saveVotes').addEventListener('click',save);
  $('refreshBoard').addEventListener('click',refreshLeaderboard);
+ window.addEventListener('bb:suggestions-changed',refreshLeaderboard);
  $('resetVotes').addEventListener('click',()=>{draft=blank();renderBallot();notice('Draft cleared; your last saved vote is unchanged.');});
  $('signout').addEventListener('click',signout);
  const cfg=window.BEYOND_BRISBANE_VOTING||{};
