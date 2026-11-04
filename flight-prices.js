@@ -72,6 +72,12 @@ function lodgingDetails(root,stay){
 }
 function decorate(){
  const budgetApi=window.BeyondGroundBudget;
+ if(budgetApi){
+  const amount=$('bbBookingDisplay'),converted=$('bbBookingUsd');
+  if(amount)amount.textContent='A$'+budgetApi.getBookedHotelAUD().toLocaleString('en-US')+' group total';
+  if(converted)converted.textContent='≈ '+money(budgetApi.getBookedHotelUSD())+
+    ' USD / '+money(budgetApi.getBookedHotelUSD()/6)+' per person · 6 travelers · Nov 4 exchange rate';
+ }
  document.querySelectorAll('.itinerary-card').forEach(card=>{
   const id=card.querySelector('[data-open]')?.dataset.open;if(!IDS.includes(id))return;
   let box=card.querySelector('.bb-fare-strip');
@@ -190,6 +196,21 @@ async function refresh(){
 function init(){
  if(!$('fareHub'))return;
  window.addEventListener('bb:cards-rendered',decorate);
+ const bookingInput=$('bbBookingAud');
+ const b=window.BeyondGroundBudget;
+ if(bookingInput&&b){
+  bookingInput.value=String(b.getBookedHotelAUD());
+  bookingInput.addEventListener('change',()=>{
+   if(!b.setBookedHotelAUD(bookingInput.value)){
+    bookingInput.value=String(b.getBookedHotelAUD());
+    status('Enter the group booking total in AUD (greater than zero).');
+    return;
+   }
+   decorate();
+   window.dispatchEvent(new Event('bb:prices-changed'));
+   status('Brisbane booking amount updated for this device.');
+  });
+ }
  $('bbRefresh')?.addEventListener('click',refresh);
  $('bbCopyRoutes')?.addEventListener('click',()=>{
   const lines=IDS.map(id=>id.toUpperCase()+'\n'+ROUTES[id].join('\n')).join('\n\n');

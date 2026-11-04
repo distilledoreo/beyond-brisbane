@@ -18,7 +18,7 @@
 
 <link rel="stylesheet" href="flight-prices.css?v=3" />
   <link rel="stylesheet" href="community-itineraries.css?v=1" />
-  <link rel="stylesheet" href="site-refinement.css?v=1" />
+  <link rel="stylesheet" href="site-refinement.css?v=2" />
 </head>
 <body class="site-home">
   <a class="skip-link" href="#itineraries">Skip to itineraries</a>
@@ -95,8 +95,15 @@
   <div class="bb-price-controls">
     <div class="bb-booked-summary" aria-label="Confirmed Brisbane hotel booking">
       <span>Brisbane hotel · booked</span>
-      <strong>A$10,700 group total</strong>
-      <small>≈ US$7,506 total / US$1,251 each · 6 travelers · Nov 4 reference exchange rate</small>
+      <strong id="bbBookingDisplay">A$10,700 group total</strong>
+      <small id="bbBookingUsd">≈ US$7,506 total / US$1,251 each · 6 travelers · Nov 4 exchange rate</small>
+      <details class="bb-booking-adjust">
+        <summary>Adjust booking amount</summary>
+        <label for="bbBookingAud">Total cost for all six (AUD)
+          <input id="bbBookingAud" type="number" min="1" max="100000" step="1" value="10700">
+        </label>
+        <small>Changes on this device only; the November 4 USD exchange rate stays fixed.</small>
+      </details>
     </div>
     <button class="bb-copy" id="bbCopyRoutes" type="button">Copy flight routes</button>
     <span id="bbPriceCount" style="font-size:12px;color:#42646a"></span>
@@ -444,8 +451,8 @@ render();
 window.addEventListener('bb:prices-changed',render);
 
   </script>
-  <script src="ground-budgets.js?v=3" defer></script>
-  <script src="flight-prices.js?v=6" defer></script>
+  <script src="ground-budgets.js?v=4" defer></script>
+  <script src="flight-prices.js?v=7" defer></script>
   <script src="community-itineraries.js?v=1" defer></script>
 </body>
 </html>

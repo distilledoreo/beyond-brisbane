@@ -12,6 +12,22 @@ const MEMBERS=6, HOTEL_ROOMS=3, HOTEL_FEES=1.12;
 // Confirmed booking for all six, converted using Nov 4, 2026 reference FX.
 const BRISBANE_BOOKING={audTotal:10700,audUsd:0.701513,fxDate:'2026-11-04'};
 const brisbaneBookedUSD=BRISBANE_BOOKING.audTotal*BRISBANE_BOOKING.audUsd;
+const bookingStorage='beyond-brisbane-confirmed-hotel-aud';
+let bookedAmountAud=BRISBANE_BOOKING.audTotal;
+try{
+ const saved=localStorage.getItem(bookingStorage);
+ const amount=saved===null?null:Number(saved);
+ if(amount!==null&&Number.isFinite(amount)&&amount>0&&amount<=100000)bookedAmountAud=amount;
+}catch{}
+function setBookedHotelAUD(value){
+ const n=Number(value);
+ if(!Number.isFinite(n)||n<=0||n>100000)return false;
+ bookedAmountAud=n;
+ try{localStorage.setItem(bookingStorage,String(n));}catch{}
+ return true;
+}
+function getBookedHotelAUD(){return bookedAmountAud;}
+function getBookedHotelUSD(){return bookedAmountAud*BRISBANE_BOOKING.audUsd;}
 const EXTRAS={insurance:150,baggage:140,travelMeals:90,entryAustralia:25};
 const COMMON=['brisbane','sydney'];
 const ROUTES={
@@ -147,13 +163,13 @@ function lodging(id){
  const o=STOPS[id];if(!o)throw Error('Invalid stop '+id);
  const booked=id==='brisbane';
  const roomNight=booked?null:o.hotelNight;
- const hotel=booked?brisbaneBookedUSD:roomNight*HOTEL_ROOMS*o.nights*HOTEL_FEES;
+ const hotel=booked?getBookedHotelUSD():roomNight*HOTEL_ROOMS*o.nights*HOTEL_FEES;
  const home=o.homeNight===null?null:o.homeNight*o.nights+o.homeFee;
  // For marginal savings under 5%, favor hotels over cleaning and turnover risk.
  const mode=home!==null&&home<hotel*.95?'home':'hotel';
  const selected=mode==='home'?home:hotel;
  return {id,place:o.place,dates:o.dates,nights:o.nights,mode,selected,hotel,home,booked,
-  bookedAud:booked?BRISBANE_BOOKING.audTotal:null,
+  bookedAud:booked?getBookedHotelAUD():null,
   audUsd:booked?BRISBANE_BOOKING.audUsd:null,
   fxDate:booked?BRISBANE_BOOKING.fxDate:null,
   hotelNight:roomNight,homeNight:o.homeNight,homeFee:o.homeFee,
@@ -182,6 +198,6 @@ function forTrip(id){
 }
 window.BeyondGroundBudget={
  MEMBERS,HOTEL_ROOMS,HOTEL_FEES,STOPS,ROUTES,ENTRY,forTrip,lodging,fmt,
- BRISBANE_BOOKING,brisbaneBookedUSD
+ BRISBANE_BOOKING,brisbaneBookedUSD,getBookedHotelAUD,getBookedHotelUSD,setBookedHotelAUD
 };
 })();
