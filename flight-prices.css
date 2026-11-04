@@ -1,0 +1,23 @@
+
+/* Beyond Brisbane: Flight comparison panel and card quotes */
+.bb-price-panel{background:#eef4f3;border:1px solid #d7e5e4;box-shadow:0 8px 28px rgba(25,49,58,.05);padding:clamp(18px,3vw,30px);margin-bottom:26px}
+.bb-price-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.bb-price-overline{font-size:10px;letter-spacing:2.3px;text-transform:uppercase;font-weight:800;color:#387080;margin:0 0 8px}
+.bb-price-head h3{font-size:clamp(22px,3vw,30px);font-weight:600;margin:0 0 8px;line-height:1.15}
+.bb-price-head p{font-size:13px;max-width:670px;color:#586b73;line-height:1.65;margin:0}
+.bb-price-head .bb-refresh{flex:0 0 auto;background:#2b6877;border:1px solid #2b6877;color:white;padding:12px 16px;font-size:11px;font-weight:800;letter-spacing:1px;cursor:pointer}
+.bb-price-head .bb-refresh:disabled{opacity:.55;cursor:wait}
+.bb-price-controls{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;border-top:1px solid #cfdfdf;padding-top:15px;margin-top:20px}
+.bb-price-controls label{font-size:12px;color:#405e65;display:flex;flex-direction:column;gap:5px;max-width:310px}
+.bb-price-controls input{min-height:37px;border:1px solid #b8cccf;background:white;padding:8px 10px;width:190px;font:inherit}
+.bb-copy{font-size:11px;background:transparent;border:1px solid #c1d2d6;padding:10px 13px;cursor:pointer;color:#2b6170;font-weight:700}
+.bb-price-status{font-size:12px;color:#4f686f;margin:15px 0 0;line-height:1.5}
+.bb-price-footnote{font-size:11px;line-height:1.65;color:#60747b;margin:8px 0 0}
+.bb-fare-strip{display:grid;grid-template-columns:1fr auto;align-items:center;gap:5px 12px;background:#f1f6f5;border:1px solid #e0ebea;padding:14px 15px;margin:12px 0}
+.bb-fare-label{font-size:9px;letter-spacing:1.25px;font-weight:800;color:#42606d}
+.bb-fare-price{font-size:22px;color:#1c4f5b;letter-spacing:-.5px;grid-row:1/3;grid-column:2}
+.bb-fare-status{font-size:11px;color:#63777d;line-height:1.3}
+.bb-deal{grid-column:1/-1;color:#1f785b;background:#e2f0e8;border:1px solid #bee0cc;padding:6px 8px;font-size:11px;font-weight:700;width:max-content;max-width:100%}
+.bb-total-estimate{grid-column:1/-1;border-top:1px solid #dae8e8;padding-top:8px;font-size:11px;font-weight:700;color:#3d6470}
+.bb-google-link{grid-column:1/-1;font-size:11px;color:#286c83;text-decoration:underline;text-underline-offset:3px;margin-top:3px}
+@media(max-width:700px){.bb-price-head{display:block}.bb-price-head .bb-refresh{margin-top:14px;width:100%}.bb-price-controls input{width:100%}.bb-fare-strip{grid-template-columns:1fr auto}}
