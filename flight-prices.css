@@ -26,3 +26,49 @@
 .bb-leg-breakdown summary{cursor:pointer;color:#296d80;font-weight:700;user-select:none}
 .bb-leg-item{display:flex;gap:14px;justify-content:space-between;border-bottom:1px solid #e2eded;padding:7px 0}
 .bb-leg-item strong{white-space:nowrap;color:#1b4f5e}
+
+/* Research-based full-trip budget, combined with cached flight estimates */
+.bb-price-controls label{max-width:390px}
+.bb-price-controls label small{font-size:10px;line-height:1.45;color:#648089;font-weight:450;max-width:385px}
+.bb-fare-strip{background:#f2f9f7;border-color:#cfe3df}
+.bb-fare-price{color:#1d5661;font-weight:800;white-space:nowrap;font-size:clamp(18px,2vw,24px)}
+.bb-fare-status{font-size:11px;max-width:310px;overflow-wrap:anywhere}
+.bb-budget-range{grid-column:1/-1;font-size:11px;color:#4d7077;font-weight:700}
+.bb-budget-overview{border:1px solid #cfdfdf;background:#f8fbfa;padding:clamp(18px,3vw,28px);margin:0 0 30px;box-shadow:0 7px 26px #284e5508}
+.bb-budget-overview-head{display:flex;justify-content:space-between;gap:28px;align-items:flex-start}
+.bb-budget-overview h3{font-size:clamp(20px,2.8vw,27px);line-height:1.18;font-weight:650;color:#254e5b;margin:0 0 10px}
+.bb-budget-overview-head p:not(.bb-price-overline){font-size:12px;line-height:1.65;max-width:710px;color:#61777f;margin:0 0 16px}
+.bb-budget-side{border-left:3px solid #91bfbb;padding:10px 0 10px 15px;min-width:155px;color:#567781;font-size:10px;font-weight:750;letter-spacing:1px}
+.bb-budget-side strong{display:block;font-size:19px;color:#255b65;margin:5px 0;letter-spacing:0}
+.bb-budget-side small{display:block;color:#6c878c;font-size:10px;font-weight:450;line-height:1.45;letter-spacing:0}
+.bb-budget-leaderboard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.bb-budget-rank{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:11px 13px;background:white;border:1px solid #dce9e9;font-size:12px;color:#365c67}
+.bb-budget-rank span{overflow-wrap:anywhere}
+.bb-budget-rank strong{white-space:nowrap;font-size:15px;color:#1c5360}
+.bb-methodology{border-top:1px solid #d8e7e7;margin-top:19px;padding-top:14px;color:#526f77;font-size:11px;line-height:1.65}
+.bb-methodology summary{cursor:pointer;color:#276b7a;font-weight:800}
+.bb-methodology p{margin:13px 0 0}
+.bb-methodology a{color:#246a82;text-decoration:underline;text-underline-offset:2px}
+.bb-budget-breakdown{grid-column:1/-1;border-top:1px solid #d1e4df;padding-top:10px;margin-top:4px;color:#395a64}
+.bb-budget-breakdown>summary{cursor:pointer;color:#246b7c;font-size:11px;font-weight:800;line-height:1.4}
+.bb-cost-row{display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:3px;border-bottom:1px solid #e0ebea;padding:9px 2px;font-size:11px}
+.bb-cost-row strong{font-size:12px;font-weight:800;color:#254f5b}
+.bb-cost-row small{color:#70888b;font-size:10px;grid-column:1/-1}
+.bb-lodging-heading{font-size:13px;margin:16px 0 9px;color:#284e58}
+.bb-lodging-option{padding:11px;border:1px solid #dfebeb;background:#fff;margin:7px 0;font-size:10px;line-height:1.5}
+.bb-lodging-option>strong{display:block;color:#325963;font-size:12px}
+.bb-lodging-option p{font-size:10px;margin:6px 0;color:#61777f;line-height:1.55}
+.bb-lodging-option .bb-lodging-winner{font-weight:800;color:#276b67;letter-spacing:.15px}
+.bb-lodging-option a{color:#286b7d;font-size:10px;text-decoration:underline}
+.bb-budget-caveat{font-size:10px;line-height:1.6;color:#687f83;margin:12px 0 5px}
+@media(max-width:800px){
+ .bb-budget-overview-head{flex-direction:column;gap:12px}
+ .bb-budget-side{border-left:0;border-top:2px solid #91bfbb;padding:8px 0;min-width:0}
+ .bb-budget-leaderboard{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ .bb-fare-strip{grid-template-columns:minmax(0,1fr) auto;gap:5px}
+ .bb-fare-price{font-size:19px}
+ .bb-budget-rank{font-size:11px}
+ .bb-budget-rank strong{font-size:13px}
+}
