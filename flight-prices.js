@@ -77,14 +77,14 @@ function decorate(){
   const label=document.createElement('span');label.className='bb-fare-label';
   label.textContent='ESTIMATED ENTIRE TRIP / PERSON · SIX ADULTS';
   const value=document.createElement('strong');value.className='bb-fare-price';
-  value.textContent=full===null?'—':money(full);
+  value.textContent=full===null?'—':'≈'+money(Math.round(full/50)*50);
   const sub=document.createElement('small');sub.className='bb-fare-status';
   sub.textContent=full===null?'Waiting for flight quote · estimated ground costs: '+(b?money(Math.round(b.nonAirfare)):'—'):
     'Cached flight estimate '+money(f)+' + modeled ground costs '+money(Math.round(b.nonAirfare));
   box.append(label,value,sub);
   if(span){
    const band=document.createElement('span');band.className='bb-budget-range';
-   band.textContent='Planning scenario: '+money(span.lower)+'–'+money(span.upper)+' per person';
+   band.textContent='Planning scenario (not a confidence interval): '+money(Math.round(span.lower/100)*100)+'–'+money(Math.round(span.upper/100)*100)+' per person';
    box.append(band);
   }
   const q=quotes.get(id),drop=Number(q?.drop_percent);
@@ -145,7 +145,7 @@ function decorate(){
    const name=document.createElement('span');
    name.textContent=ROUTES[row.id]?.slice(2).map(x=>x.split(' · ')[0]).join(' → ')||row.id;
    const price=document.createElement('strong');
-   price.textContent=row.total!==null?money(row.total):'Fare pending';
+   price.textContent=row.total!==null?'≈'+money(Math.round(row.total/50)*50):'Fare pending';
    item.append(name,price);summaries.append(item);
   }
  }
