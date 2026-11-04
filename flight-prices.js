@@ -29,7 +29,7 @@ function info(id){
  if(!connected)return'Pricing service not connected';
  if(!q||price(id)===null)return q?.status==='unavailable'?'No complete fare returned':q?.status==='error'?'Search temporarily unavailable':'Not priced yet';
  const stamp=q.checked_at?new Date(q.checked_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
- return (q.status==='available'?'Indicative economy quote':'Previous quote, may be stale')+(stamp?' · checked '+stamp:'');
+ return (q.status==='available'?'Sum of lowest one-way fares':'Previous leg quotes may be stale')+(stamp?' · checked '+stamp:'');
 }
 function decorate(){
  document.querySelectorAll('.itinerary-card').forEach(card=>{
@@ -38,7 +38,7 @@ function decorate(){
   if(!box){box=document.createElement('div');box.className='bb-fare-strip';card.querySelector('.card-meta')?.insertAdjacentElement('afterend',box);}
   if(!box)return;
   box.replaceChildren();
-  const label=document.createElement('span');label.className='bb-fare-label';label.textContent='MULTI-CITY AIRFARE / ADULT';
+  const label=document.createElement('span');label.className='bb-fare-label';label.textContent='SUM OF ONE-WAY FLIGHTS / ADULT';
   const value=document.createElement('strong');value.className='bb-fare-price';value.textContent=price(id)===null?'—':money(price(id));
   const sub=document.createElement('small');sub.className='bb-fare-status';sub.textContent=info(id);
   box.append(label,value,sub);
@@ -47,7 +47,19 @@ function decorate(){
    const flag=document.createElement('span');flag.className='bb-deal';flag.textContent='↓ '+Math.round(drop)+'% vs earlier quotes';box.append(flag);
   }
   const t=total(id);
-  if(t!==null){const totalLabel=document.createElement('span');totalLabel.className='bb-total-estimate';totalLabel.textContent='With your land budget: '+money(t)+' / person';box.append(totalLabel);}
+  if(t!==null){const totalLabel=document.createElement('span');totalLabel.className='bb-total-estimate';totalLabel.textContent='Airfare + your land-budget estimate: '+money(t)+' / person';box.append(totalLabel);}
+  if(Array.isArray(q?.legs)&&q.legs.length){
+    const details=document.createElement('details');details.className='bb-leg-breakdown';
+    const summary=document.createElement('summary');summary.textContent='See flight leg prices and dates';
+    details.append(summary);
+    for(const leg of q.legs){
+      const row=document.createElement('div');row.className='bb-leg-item';
+      const name=document.createElement('span');name.textContent=leg.origin+' → '+leg.destination+' · '+new Date(leg.date+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
+      const val=document.createElement('strong');val.textContent=Number(leg.price_usd)>0?money(leg.price_usd):'—';
+      row.append(name,val);details.append(row);
+    }
+    box.append(details);
+  }
   const link=document.createElement('a');link.href='https://www.google.com/travel/flights?hl=en&gl=us&curr=USD';link.target='_blank';link.rel='noopener noreferrer';link.className='bb-google-link';link.textContent='Open Google Flights ↗';box.append(link);
  });
  const count=IDS.filter(id=>price(id)!==null).length;
@@ -58,14 +70,14 @@ async function snapshot(){
  const res=await fetch(ENDPOINT,{cache:'no-store',headers:{'apikey':APIKEY}});
  if(!res.ok)throw Error('Pricing service unavailable');
  const data=await res.json();connected=data.connected===true;update(data.quotes);
- status(connected?'Provider connected · fare snapshots cached for 36 hours.':'Google Flights pricing is not connected yet. No prices are being fabricated.');
+ status(connected?'Provider connected · shared one-way flight legs cached for seven days.':'Google Flights pricing is not connected yet. No prices are being fabricated.');
  return data;
 }
 function due(q){return !q||!q.next_refresh_at||!Number.isFinite(Date.parse(q.next_refresh_at))||Date.parse(q.next_refresh_at)<=Date.now();}
 async function refresh(){
  if(loading)return;if(!connected){status('A free flight-data provider API key is needed to show actual fares.');return;}
  const ids=IDS.filter(id=>due(quotes.get(id)));
- if(!ids.length){status('Already checked recently. Next refresh after the 36-hour cache window.');return;}
+ if(!ids.length){status('Airfare legs already checked recently. Next provider search after their seven-day cache expires.');return;}
  loading=true;if($('bbRefresh'))$('bbRefresh').disabled=true;
  let index=0,finished=0;
  async function worker(){
@@ -81,7 +93,7 @@ async function refresh(){
  await Promise.all([worker(),worker()]);
  loading=false;if($('bbRefresh'))$('bbRefresh').disabled=false;
  try{await snapshot();}catch{}
- status('Prices checked. Confirm baggage, connections and final fare before booking.');
+ status('Flight-leg estimates updated. Verify arrival dates, baggage, connections and combined-ticket options before booking.');
  window.dispatchEvent(new Event('bb:prices-changed'));
 }
 function init(){
