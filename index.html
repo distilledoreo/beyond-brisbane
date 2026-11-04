@@ -17,6 +17,7 @@
   </style>
 
 <link rel="stylesheet" href="flight-prices.css?v=1" />
+  <link rel="stylesheet" href="community-itineraries.css?v=1" />
 </head>
 <body>
   <a class="skip-link" href="#itineraries">Skip to itineraries</a>
@@ -102,6 +103,42 @@
  </section>
         <div class="itinerary-grid" id="itineraryGrid" aria-live="polite"></div>
         <div class="empty-state" id="emptyState" hidden><h3>No itineraries found</h3><p>Try another destination or remove a filter.</p><button type="button" class="button button-outline-dark" id="resetFilters">SHOW ALL EIGHT</button></div>
+      </div>
+    </section>
+
+    <section class="community-section section-pad" id="communityItineraries" aria-labelledby="communityTitle">
+      <div class="wrap">
+        <div class="community-header">
+          <div class="community-header-copy">
+            <p class="community-eyebrow">FROM THE GROUP · CUSTOM TRAVEL IDEAS</p>
+            <h2 id="communityTitle">Your ideas. More possibilities.</h2>
+            <p>Alongside our eight original itineraries, see the routes our group has created. Each suggestion builds on the fixed Brisbane and Sydney stops and maps out where to go next.</p>
+          </div>
+          <a class="community-add-link" href="group.html#suggestions">+ SUBMIT YOUR OWN ITINERARY</a>
+        </div>
+        <div class="community-actions">
+          <span id="communityCount" class="community-count">PRIVATE GROUP IDEAS</span>
+          <div id="communityMemberTools" class="community-tools" hidden>
+            <button type="button" id="communityRefresh" class="community-text-button">REFRESH SUGGESTIONS</button>
+            <button type="button" id="communityChangeMember" class="community-text-button">CHANGE MEMBER</button>
+          </div>
+        </div>
+        <div id="communityGate" class="community-gate" hidden>
+          <h3>See your group's suggested itineraries</h3>
+          <p>These ideas are shared only with the six registered travelers. Enter the same first and last name you use for group voting. On this device, you'll normally stay signed in automatically.</p>
+          <form id="communityLoginForm" class="community-login">
+            <label for="communityFirstName">FIRST NAME
+              <input id="communityFirstName" name="first" type="text" autocomplete="given-name" autocapitalize="characters" maxlength="70" required>
+            </label>
+            <label for="communityLastName">LAST NAME
+              <input id="communityLastName" name="last" type="text" autocomplete="family-name" autocapitalize="characters" maxlength="70" required>
+            </label>
+            <button id="communityLoginButton" type="submit">SHOW GROUP IDEAS →</button>
+          </form>
+        </div>
+        <div id="communityCards" class="community-cards" aria-live="polite" hidden></div>
+        <p id="communityStatus" class="community-status" role="status" aria-live="polite">Checking group access…</p>
+        <p class="community-privacy">Group submissions are proposals, not part of the original eight or the live flight-price comparison. Member names are not shown here.</p>
       </div>
     </section>
 
@@ -369,5 +406,6 @@ window.addEventListener('bb:prices-changed',render);
 
   </script>
   <script src="flight-prices.js?v=3" defer></script>
+  <script src="community-itineraries.js?v=1" defer></script>
 </body>
 </html>
