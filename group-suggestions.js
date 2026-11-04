@@ -152,13 +152,19 @@
       const details=document.createElement('details');details.className='ss-idea';
       const summary=document.createElement('summary');summary.className='ss-idea-header';
       const txt=document.createElement('div');txt.className='ss-idea-heading';
-      const line=document.createElement('strong');line.textContent=all.map(x=>x.destination).join(' → ')||'Proposed itinerary';
+      const line=document.createElement('strong');line.textContent=['Brisbane','Sydney',...all.map(x=>x.destination)].join(' → ');
       const small=document.createElement('small');small.textContent=all.length+' '+(all.length===1?'stop':'stops')+' · submitted '+new Date(idea.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
       txt.append(line,small);
       summary.append(txt);
       if(idea.mine){const mine=document.createElement('span');mine.className='ss-mine';mine.textContent='YOUR IDEA';summary.append(mine);}
       details.append(summary);
       const stops=document.createElement('div');stops.className='ss-idea-body';
+      [['Jun 27 – Jul 5','Brisbane (fixed)'],['Jul 6 – Jul 9','Sydney (fixed)']].forEach(fixed=>{
+        const row=document.createElement('div');row.className='ss-idea-leg ss-fixed-leg';
+        const date=document.createElement('span');date.textContent=fixed[0];
+        const place=document.createElement('strong');place.textContent=fixed[1];
+        row.append(date,place);stops.append(row);
+      });
       all.forEach(item=>{
         const row=document.createElement('div');row.className='ss-idea-leg';
         const date=document.createElement('span');date.textContent=rangeLabel(item.start,item.end);
