@@ -85,8 +85,8 @@
   <div class="bb-price-head">
    <div>
     <p class="bb-price-overline">Flight comparison · July 2027</p>
-    <h3 id="fareHubTitle">Compare the cost of getting there.</h3>
-    <p>Our flight search compares New York → Brisbane (June 25) → Sydney (July 6) → the itinerary's extra stops → New York (depart July 17). Search dates are provisional, and fares are per adult in economy class.</p>
+    <h3 id="fareHubTitle">Compare current flight-price estimates.</h3>
+    <p>For each option, we add the lowest one-way economy flight prices for New York → Brisbane (June 25) → Sydney (July 6) → the additional stops → New York (July 17). These are separate flight-leg quotes, <strong>not</strong> a combined, bookable itinerary.</p>
    </div>
    <button class="bb-refresh" id="bbRefresh" type="button">CHECK CURRENT FARES</button>
   </div>
@@ -98,7 +98,7 @@
     <span id="bbPriceCount" style="font-size:12px;color:#42646a"></span>
   </div>
   <p id="bbQuoteStatus" class="bb-price-status" role="status">Checking fare-service connection…</p>
-  <p class="bb-price-footnote">Live provider quotes, when connected, are indicative multi-city flight-search prices, not guaranteed ticket offers. Hotel prices are <strong>not live</strong>: the optional total adds your own land-budget estimate. Baggage, insurance, visas, room-sharing and connections may change your real costs. A deal badge appears only after at least three earlier checks show a meaningful price drop.</p>
+  <p class="bb-price-footnote">Quotes are retrieved from Google Flights data via SerpApi, cached for up to seven days. Prices are for one adult, not six guaranteed seats. The least expensive flight for each segment might not have workable connections or arrive in time for scheduled activities. Booking legs separately can create missed-connection risks; compare the complete trip before purchasing. Hotel and activity costs are <strong>not live</strong>; the optional land budget is a personal estimate added equally to each itinerary. Deal badges compare previous observed fare sums, not Google Flights' official price forecasts.</p>
  </section>
         <div class="itinerary-grid" id="itineraryGrid" aria-live="polite"></div>
         <div class="empty-state" id="emptyState" hidden><h3>No itineraries found</h3><p>Try another destination or remove a filter.</p><button type="button" class="button button-outline-dark" id="resetFilters">SHOW ALL EIGHT</button></div>
@@ -368,6 +368,6 @@ render();
 window.addEventListener('bb:prices-changed',render);
 
   </script>
-  <script src="flight-prices.js?v=1" defer></script>
+  <script src="flight-prices.js?v=2" defer></script>
 </body>
 </html>
