@@ -154,7 +154,8 @@ function lodging(id){
  const roomNight=id==='brisbane'?conventionHotel:o.hotelNight;
  const hotel=roomNight*HOTEL_ROOMS*o.nights*HOTEL_FEES;
  const home=o.homeNight===null?null:o.homeNight*o.nights+o.homeFee;
- const mode=home!==null&&home<hotel?'home':'hotel';
+ // For marginal savings under 5%, favor hotels over cleaning and turnover risk.
+ const mode=home!==null&&home<hotel*.95?'home':'hotel';
  const selected=mode==='home'?home:hotel;
  return {id,place:o.place,dates:o.dates,nights:o.nights,mode,selected,hotel,home,
   hotelNight:roomNight,homeNight:o.homeNight,homeFee:o.homeFee,
