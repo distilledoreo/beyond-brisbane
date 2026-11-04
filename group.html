@@ -27,17 +27,18 @@
     <div class="status-strip"><div><span id="statusDot" class="status-dot"></span><span id="statusText" class="status-line">Checking voting service…</span></div><div class="meta" id="identityText">No names or individual votes appear on the leaderboard.</div></div>
     <div class="notice" id="alert" role="status" aria-live="polite" hidden></div>
     <section id="setupView" class="card" hidden><p class="overline">COMING SOON</p><h2>Group voting isn't connected yet.</h2><p class="subhead">The connection is temporarily unavailable. Please try refreshing this page.</p><a class="btn" href="index.html#itineraries">EXPLORE ITINERARIES</a></section>
-    <section id="loginView" class="card" hidden><p class="overline">PRIVATE GROUP ACCESS</p><h2>Sign in to rank the itineraries.</h2>
-<p class="subhead">Enter your first and last name on this screen, then your unique member code. Names are checked on your device but <strong>never sent or saved</strong>. Your private code is what securely identifies your ballot.</p>
-<form id="loginForm" class="formgrid">
-<div class="field"><label for="firstName">First name</label><input id="firstName" type="text" autocomplete="given-name" maxlength="60" required></div>
-<div class="field"><label for="lastName">Last name</label><input id="lastName" type="text" autocomplete="family-name" maxlength="60" required></div>
-<div class="field full"><label for="accessCode">Your private member code</label><input id="accessCode" type="password" autocomplete="off" maxlength="100" required placeholder="BB27-…"></div>
-<div class="field full"><div class="buttonrow"><button class="btn" id="loginButton" type="submit">OPEN MY PRIVATE BALLOT →</button></div></div>
-</form>
-<div class="privacy-flag"><span aria-hidden="true">◈</span><div><strong>Private by design</strong>No names or emails are stored in this voting database. Each person's vote is protected by their unique access code. The group leaderboard shows combined results only.</div></div>
-<p class="smallprint login-note">Keep your personal code private, as you would a password. You can sign in from another device using the same code and change your preferences any time.</p>
-</section>
+    <section id="loginView" class="card" hidden>
+      <p class="overline">GROUP CHOICES</p>
+      <h2>Sign in with your name.</h2>
+      <p class="subhead">Just enter your first and last name. Your ballot will be saved under that name, and you can change it anytime. Returning on this device signs you in automatically.</p>
+      <form id="loginForm" class="formgrid">
+        <div class="field"><label for="firstName">First name</label><input id="firstName" type="text" autocomplete="given-name" maxlength="70" required></div>
+        <div class="field"><label for="lastName">Last name</label><input id="lastName" type="text" autocomplete="family-name" maxlength="70" required></div>
+        <div class="field full"><div class="buttonrow"><button class="btn" id="loginButton" type="submit">OPEN MY TIER LIST →</button></div></div>
+      </form>
+      <div class="privacy-flag"><span aria-hidden="true">◈</span><div><strong>Names stay out of public results</strong>No group members' names are embedded in the site's source code or shown on the leaderboard. The database stores a one-way secret-keyed identifier rather than your actual name.</div></div>
+      <p class="smallprint login-note"><strong>Simple, not secure authentication:</strong> anyone who knows your full name can edit your ballot. Use the same spelling each time, and avoid signing in on shared devices.</p>
+    </section>
     <div id="votingView" hidden>
       <div class="two-up">
         <section class="card" aria-labelledby="my-tier-title"><p class="overline">YOUR BALLOT</p><h2 id="my-tier-title">Make your tier list.</h2><p class="subhead">Drag cards into a tier, or use each card's dropdown (also works on phones). Assign all eight itineraries before saving. Several options can share the same tier.</p>
@@ -48,13 +49,13 @@
         </section>
         <section class="card" aria-labelledby="leaderboard-title"><p class="overline">LIVE GROUP OPINION</p><h2 id="leaderboard-title">The leaderboard.</h2><p class="subhead">Ranked by average tier score, from 5 points for S to 1 for D. Individual ballots and members' names are never displayed.</p><div id="leaderboard" aria-live="polite"><p class="no-data">Loading group preferences…</p></div><div class="countline" id="countline"></div><button class="btn secondary" id="refreshBoard" type="button" style="margin-top:15px">REFRESH RESULTS</button></section>
       </div>
-      <p class="section-privacy">Only holders of one of the eight individual private access codes can see group results. No names or email addresses are stored by this voting system. In a very small group, people may still infer someone's preferences from changes to aggregate scores; this cannot be completely prevented by removing names.</p>
+      <p class="section-privacy">The leaderboard shows aggregate scores only, never names or individual ballots. Names are sent securely to the voting backend for lookup but are not stored as readable text. Names alone do not provide real account security: someone who knows your name could edit your vote. In a small group, preferences may also be inferred from changes to totals.</p>
     </div>
   </main>
   <footer class="foot"><div class="wrap"><strong>BEYOND BRISBANE 2027</strong><span>Independent travel-planning site · Not an official JW Event service</span></div></footer>
   <script>
 // Public Supabase URL and publishable key only. NEVER put a service-role/secret key in this file.
-// Filled in when the dedicated voting project has been created.
+// Public-facing project configuration. Names or private server secrets are never embedded here.
 window.BEYOND_BRISBANE_VOTING = {
   url: 'https://forjvxdumfenuardlyci.supabase.co',
   publishableKey: 'sb_publishable_NW3IlBA3FaNVDchM03pGLg_Ah2x4G7h'
