@@ -30,14 +30,14 @@
     <section id="loginView" class="card" hidden>
       <p class="overline">GROUP CHOICES</p>
       <h2>Sign in with your name.</h2>
-      <p class="subhead">Just enter your first and last name. Your ballot will be saved under that name, and you can change it anytime. Returning on this device signs you in automatically.</p>
+      <p class="subhead">Enter your first and last name in CAPITAL LETTERS. Only the six registered travelers can participate. Returning on this device will sign you in automatically.</p>
       <form id="loginForm" class="formgrid">
-        <div class="field"><label for="firstName">First name</label><input id="firstName" type="text" autocomplete="given-name" maxlength="70" required></div>
-        <div class="field"><label for="lastName">Last name</label><input id="lastName" type="text" autocomplete="family-name" maxlength="70" required></div>
+        <div class="field"><label for="firstName">First name</label><input id="firstName" type="text" autocomplete="given-name" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase" maxlength="70" required></div>
+        <div class="field"><label for="lastName">Last name</label><input id="lastName" type="text" autocomplete="family-name" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase" maxlength="70" required></div>
         <div class="field full"><div class="buttonrow"><button class="btn" id="loginButton" type="submit">OPEN MY TIER LIST →</button></div></div>
       </form>
-      <div class="privacy-flag"><span aria-hidden="true">◈</span><div><strong>Names stay out of public results</strong>No group members' names are embedded in the site's source code or shown on the leaderboard. The database stores a one-way secret-keyed identifier rather than your actual name.</div></div>
-      <p class="smallprint login-note"><strong>Simple, not secure authentication:</strong> anyone who knows your full name can edit your ballot. Use the same spelling each time, and avoid signing in on shared devices.</p>
+      <div class="privacy-flag"><span aria-hidden="true">◈</span><div><strong>Names stay out of public results</strong>Only six registered people can vote. The site's source code and leaderboard never display their names. The server stores secret-keyed name identifiers, not readable names.</div></div>
+      <p class="smallprint login-note"><strong>Names are checked against a private group list.</strong> Someone who knows an approved person's full name can still edit that person's ballot. Use the same spelling each time.</p>
     </section>
     <div id="votingView" hidden>
       <div class="two-up">
@@ -49,7 +49,7 @@
         </section>
         <section class="card" aria-labelledby="leaderboard-title"><p class="overline">LIVE GROUP OPINION</p><h2 id="leaderboard-title">The leaderboard.</h2><p class="subhead">Ranked by average tier score, from 5 points for S to 1 for D. Individual ballots and members' names are never displayed.</p><div id="leaderboard" aria-live="polite"><p class="no-data">Loading group preferences…</p></div><div class="countline" id="countline"></div><button class="btn secondary" id="refreshBoard" type="button" style="margin-top:15px">REFRESH RESULTS</button></section>
       </div>
-      <p class="section-privacy">The leaderboard shows aggregate scores only, never names or individual ballots. Names are sent securely to the voting backend for lookup but are not stored as readable text. Names alone do not provide real account security: someone who knows your name could edit your vote. In a small group, preferences may also be inferred from changes to totals.</p>
+      <p class="section-privacy">The leaderboard shows aggregate scores only, never names or individual ballots. Names are transmitted to the voting service for private allowlist matching, not stored as readable text. With name-only sign-in, anyone knowing a registered traveler's name can impersonate them. In a small group, changes to totals may indirectly reveal preferences.</p>
     </div>
   </main>
   <footer class="foot"><div class="wrap"><strong>BEYOND BRISBANE 2027</strong><span>Independent travel-planning site · Not an official JW Event service</span></div></footer>
@@ -62,6 +62,6 @@ window.BEYOND_BRISBANE_VOTING = {
 };
 
   </script>
-  <script src="group-code.js?v=2" defer></script>
+  <script src="group-code.js?v=3" defer></script>
 </body>
 </html>
