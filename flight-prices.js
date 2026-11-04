@@ -17,12 +17,18 @@ const ROUTES={
 };
 const $=id=>document.getElementById(id);
 const money=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v);
-const quotes=new Map();let connected=false,loading=false,landBudget=null;
-const STORAGE='beyond-brisbane-land-budget';
-try{const n=Number(localStorage.getItem(STORAGE));if(localStorage.getItem(STORAGE)!==null&&Number.isFinite(n)&&n>=0&&n<=100000)landBudget=n;}catch{}
+const quotes=new Map();let connected=false,loading=false;
+const ground=id=>window.BeyondGroundBudget?.forTrip?.(id)??null;
 function price(id){const n=Number(quotes.get(id)?.fare_usd);return n>0&&Number.isFinite(n)?n:null;}
-function total(id){const n=price(id);return n!==null&&landBudget!==null?n+landBudget:null;}
-window.BeyondFares={price,total};
+function total(id){const f=price(id),b=ground(id);return f!==null&&b?Math.round(f+b.nonAirfare):null;}
+function range(id){
+ const b=ground(id),f=price(id);if(!b||f===null)return null;
+ // Scenario boundaries, NOT statistical confidence intervals. The airfare
+ // is already a floor from independently priced legs, not a bookable package.
+ return {lower:Math.round(f+b.nonAirfare*.85),
+         upper:Math.round(f*1.4+b.nonAirfare*1.3)};
+}
+window.BeyondFares={price,total,range,ground};
 function status(msg){if($('bbQuoteStatus'))$('bbQuoteStatus').textContent=msg;}
 function info(id){
  const q=quotes.get(id);
@@ -31,41 +37,121 @@ function info(id){
  const stamp=q.checked_at?new Date(q.checked_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
  return (q.status==='available'?'Sum of lowest one-way fares':'Previous leg quotes may be stale')+(stamp?' · checked '+stamp:'');
 }
+function costRow(root,title,value,note=''){
+ const item=document.createElement('div');item.className='bb-cost-row';
+ const label=document.createElement('span');label.textContent=title;
+ const amount=document.createElement('strong');amount.textContent=Number.isFinite(value)?money(Math.round(value)):'—';
+ item.append(label,amount);
+ if(note){const small=document.createElement('small');small.textContent=note;item.append(small);}
+ root.append(item);
+}
+function lodgingDetails(root,stay){
+ const item=document.createElement('div');item.className='bb-lodging-option';
+ const title=document.createElement('strong');
+ title.textContent=stay.place+' · '+stay.nights+' '+(stay.nights===1?'night':'nights');
+ item.append(title);
+ const mode=document.createElement('p');
+ mode.className='bb-lodging-winner';
+ mode.textContent=(stay.mode==='home'?'MODELED LOWEST: THREE-BEDROOM GROUP RENTAL':
+   stay.id==='brisbane'?'CONVENTION HOTEL · RATE ESTIMATE':'MODELED LOWEST: THREE SHARED HOTEL ROOMS')+
+   ' · '+money(Math.round(stay.perPerson))+' / adult';
+ item.append(mode);
+ const comparison=document.createElement('p');
+ comparison.textContent='Hotel: '+money(Math.round(stay.hotel))+' total (3 rooms for group)'+
+   (stay.home===null?' · Group rental not used':'  |  Six-person rental: '+money(Math.round(stay.home))+' total');
+ item.append(comparison);
+ const note=document.createElement('p');note.textContent=stay.note;item.append(note);
+ const source=document.createElement('a');source.href=stay.source;source.target='_blank';
+ source.rel='noopener noreferrer';source.textContent='Reference for local travel costs ↗';
+ item.append(source);root.append(item);
+}
 function decorate(){
+ const budgetApi=window.BeyondGroundBudget;
  document.querySelectorAll('.itinerary-card').forEach(card=>{
   const id=card.querySelector('[data-open]')?.dataset.open;if(!IDS.includes(id))return;
   let box=card.querySelector('.bb-fare-strip');
   if(!box){box=document.createElement('div');box.className='bb-fare-strip';card.querySelector('.card-meta')?.insertAdjacentElement('afterend',box);}
   if(!box)return;
   box.replaceChildren();
-  const label=document.createElement('span');label.className='bb-fare-label';label.textContent='SUM OF ONE-WAY FLIGHTS / ADULT';
-  const value=document.createElement('strong');value.className='bb-fare-price';value.textContent=price(id)===null?'—':money(price(id));
-  const sub=document.createElement('small');sub.className='bb-fare-status';sub.textContent=info(id);
+  const b=ground(id),f=price(id),full=total(id),span=range(id);
+  const label=document.createElement('span');label.className='bb-fare-label';
+  label.textContent='ESTIMATED ENTIRE TRIP / PERSON · SIX ADULTS';
+  const value=document.createElement('strong');value.className='bb-fare-price';
+  value.textContent=full===null?'—':money(full);
+  const sub=document.createElement('small');sub.className='bb-fare-status';
+  sub.textContent=full===null?'Waiting for flight quote · estimated ground costs: '+(b?money(Math.round(b.nonAirfare)):'—'):
+    'Cached flight estimate '+money(f)+' + modeled ground costs '+money(Math.round(b.nonAirfare));
   box.append(label,value,sub);
+  if(span){
+   const band=document.createElement('span');band.className='bb-budget-range';
+   band.textContent='Planning scenario: '+money(span.lower)+'–'+money(span.upper)+' per person';
+   box.append(band);
+  }
   const q=quotes.get(id),drop=Number(q?.drop_percent);
   if(q&&Number(q.previous_observations)>=3&&Number.isFinite(drop)&&drop>=10){
-   const flag=document.createElement('span');flag.className='bb-deal';flag.textContent='↓ '+Math.round(drop)+'% vs earlier quotes';box.append(flag);
+   const flag=document.createElement('span');flag.className='bb-deal';
+   flag.textContent='↓ Airfare '+Math.round(drop)+'% vs earlier quotes';box.append(flag);
   }
-  const t=total(id);
-  if(t!==null){const totalLabel=document.createElement('span');totalLabel.className='bb-total-estimate';totalLabel.textContent='Airfare + your land-budget estimate: '+money(t)+' / person';box.append(totalLabel);}
+  if(b){
+   const details=document.createElement('details');details.className='bb-budget-breakdown';
+   const summary=document.createElement('summary');
+   summary.textContent='Full cost breakdown + six-person room-sharing comparison';
+   details.append(summary);
+   costRow(details,'Flights — lowest separate one-way fares',f??NaN,info(id));
+   costRow(details,'Accommodations (shared six ways)',b.lodging);
+   costRow(details,'Meals',b.food);
+   costRow(details,'Local transport + transfers',b.local);
+   costRow(details,'Excursions + attractions',b.activities);
+   costRow(details,'Insurance + baggage + travel-day meals + entry',b.insurance+b.baggage+b.travelMeals+b.entry);
+   costRow(details,'10% ground contingency',b.contingency);
+   const lodgingTitle=document.createElement('h5');lodgingTitle.className='bb-lodging-heading';
+   lodgingTitle.textContent='Best-value modeled lodging arrangements · six adults';
+   details.append(lodgingTitle);
+   b.stays.forEach(stay=>lodgingDetails(details,stay));
+   const warning=document.createElement('p');warning.className='bb-budget-caveat';
+   warning.textContent='Prices shown are 2026 research-based planning assumptions, not live 2027 room quotes. Three rooms means two travelers per room; a rental must legally accommodate six adults with agreed sleeping arrangements. The lowest modeled option is not guaranteed available or bookable. Hotel comparison includes a 12% fees allowance; rentals include one-time cleaning estimates.';
+   details.append(warning);box.append(details);
+  }
   if(Array.isArray(q?.legs)&&q.legs.length){
-    const details=document.createElement('details');details.className='bb-leg-breakdown';
-    const summary=document.createElement('summary');summary.textContent='See flight leg prices and dates';
-    details.append(summary);
-    for(const leg of q.legs){
-      const row=document.createElement('div');row.className='bb-leg-item';
-      const name=document.createElement('span');name.textContent=leg.origin+' → '+leg.destination+' · '+new Date(leg.date+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
-      const val=document.createElement('strong');val.textContent=Number(leg.price_usd)>0?money(leg.price_usd):'—';
-      row.append(name,val);details.append(row);
-    }
-    box.append(details);
+   const details=document.createElement('details');details.className='bb-leg-breakdown';
+   const summary=document.createElement('summary');summary.textContent='Flight segments + dates (airfare estimate)';
+   details.append(summary);
+   for(const leg of q.legs){
+    const row=document.createElement('div');row.className='bb-leg-item';
+    const name=document.createElement('span');
+    name.textContent=leg.origin+' → '+leg.destination+' · '+
+      new Date(leg.date+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
+    const val=document.createElement('strong');
+    val.textContent=Number(leg.price_usd)>0?money(leg.price_usd):'—';
+    row.append(name,val);details.append(row);
+   }
+   box.append(details);
   }
-  const link=document.createElement('a');link.href='https://www.google.com/travel/flights?hl=en&gl=us&curr=USD';link.target='_blank';link.rel='noopener noreferrer';link.className='bb-google-link';link.textContent='Open Google Flights ↗';box.append(link);
+  const link=document.createElement('a');link.href='https://www.google.com/travel/flights?hl=en&gl=us&curr=USD';
+  link.target='_blank';link.rel='noopener noreferrer';link.className='bb-google-link';
+  link.textContent='Open Google Flights ↗';box.append(link);
  });
  const count=IDS.filter(id=>price(id)!==null).length;
- if($('bbPriceCount'))$('bbPriceCount').textContent=count+' of 8 itineraries have indicative quotes';
+ if($('bbPriceCount'))$('bbPriceCount').textContent=count+' of 8 itineraries have cached flight quotes + ground budgets';
+ const summaries=$('bbBudgetLeaderboard');
+ if(summaries&&budgetApi){
+  const rows=IDS.map(id=>({id,total:total(id),ground:ground(id)?.nonAirfare})).sort((a,b)=>(a.total??Infinity)-(b.total??Infinity));
+  summaries.replaceChildren();
+  if(rows.every(x=>x.total===null)){
+   const notice=document.createElement('p');notice.textContent='Flight quotes are loading. The non-flight estimates are available in each itinerary card.';
+   summaries.append(notice);
+  }else for(const row of rows){
+   const item=document.createElement('div');item.className='bb-budget-rank';
+   const name=document.createElement('span');
+   name.textContent=ROUTES[row.id]?.slice(2).map(x=>x.split(' · ')[0]).join(' → ')||row.id;
+   const price=document.createElement('strong');
+   price.textContent=row.total!==null?money(row.total):'Fare pending';
+   item.append(name,price);summaries.append(item);
+  }
+ }
 }
-function update(rows){if(Array.isArray(rows))for(const q of rows)if(IDS.includes(q?.route_id))quotes.set(q.route_id,q);decorate();}
+
+function update(rows){if(Array.isArray(rows))for(const q of rows)if(IDS.includes(q?.route_id))quotes.set(q.route_id,q);decorate();window.dispatchEvent(new Event('bb:prices-changed'));}
 async function snapshot(){
  const res=await fetch(ENDPOINT,{cache:'no-store',headers:{'apikey':APIKEY}});
  if(!res.ok)throw Error('Pricing service unavailable');
@@ -99,13 +185,17 @@ async function refresh(){
 function init(){
  if(!$('fareHub'))return;
  window.addEventListener('bb:cards-rendered',decorate);
- const input=$('bbLandBudget');
- if(landBudget!==null&&input)input.value=String(landBudget);
+ const input=$('bbConventionRate');
+ const b=window.BeyondGroundBudget;
+ if(b&&input)input.value=String(b.conventionRate());
  input?.addEventListener('change',()=>{
-  const n=input.value.trim()===''?null:Number(input.value);
-  landBudget=n!==null&&Number.isFinite(n)&&n>=0&&n<=100000?n:null;
-  try{if(landBudget===null)localStorage.removeItem(STORAGE);else localStorage.setItem(STORAGE,String(landBudget));}catch{}
+  const val=Number(input.value);
+  if(!b?.setConventionRate(val)){
+   input.value=String(b?.conventionRate?.()??185);
+   status('Enter a valid convention hotel cost per room per night (USD).');return;
+  }
   decorate();window.dispatchEvent(new Event('bb:prices-changed'));
+  status('Convention room-rate assumption saved on this device; group costs recalculated.');
  });
  $('bbRefresh')?.addEventListener('click',refresh);
  $('bbCopyRoutes')?.addEventListener('click',()=>{
