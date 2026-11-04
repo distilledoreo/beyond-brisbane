@@ -16,6 +16,7 @@
 
   </style>
 
+<link rel="stylesheet" href="flight-prices.css?v=1" />
 </head>
 <body>
   <a class="skip-link" href="#itineraries">Skip to itineraries</a>
@@ -78,8 +79,27 @@
             <button type="button" class="filter" data-filter="culture" aria-pressed="false">CULTURE</button>
             <button type="button" class="filter" data-filter="nature" aria-pressed="false">NATURE</button>
           </div>
-          <div class="toolbar-right"><label class="search-wrap"><span class="sr-only">Search itineraries</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search a destination" autocomplete="off" /></label><label class="sort-wrap"><span class="sr-only">Sort itineraries</span><select id="sortSelect"><option value="recommended">Recommended order</option><option value="cost">Lower budget first</option><option value="pace">Most relaxed first</option><option value="alpha">A to Z</option></select></label></div>
+          <div class="toolbar-right"><label class="search-wrap"><span class="sr-only">Search itineraries</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search a destination" autocomplete="off" /></label><label class="sort-wrap"><span class="sr-only">Sort itineraries</span><select id="sortSelect"><option value="recommended">Recommended order</option><option value="fare">Lowest airfare first</option><option value="total">Lowest estimated total first</option><option value="cost">Lower budget first</option><option value="pace">Most relaxed first</option><option value="alpha">A to Z</option></select></label></div>
         </div>
+<section id="fareHub" class="bb-price-panel" aria-labelledby="fareHubTitle">
+  <div class="bb-price-head">
+   <div>
+    <p class="bb-price-overline">Flight comparison · July 2027</p>
+    <h3 id="fareHubTitle">Compare the cost of getting there.</h3>
+    <p>Our flight search compares New York → Brisbane (June 25) → Sydney (July 6) → the itinerary's extra stops → New York (depart July 17). Search dates are provisional, and fares are per adult in economy class.</p>
+   </div>
+   <button class="bb-refresh" id="bbRefresh" type="button">CHECK CURRENT FARES</button>
+  </div>
+  <div class="bb-price-controls">
+    <label for="bbLandBudget">Your estimated hotels, food & activities per person (USD, optional)
+      <input id="bbLandBudget" type="number" min="0" max="100000" step="50" placeholder="Enter your land budget">
+    </label>
+    <button class="bb-copy" id="bbCopyRoutes" type="button">COPY ALL EIGHT FLIGHT ROUTES</button>
+    <span id="bbPriceCount" style="font-size:12px;color:#42646a"></span>
+  </div>
+  <p id="bbQuoteStatus" class="bb-price-status" role="status">Checking fare-service connection…</p>
+  <p class="bb-price-footnote">Live provider quotes, when connected, are indicative multi-city flight-search prices, not guaranteed ticket offers. Hotel prices are <strong>not live</strong>: the optional total adds your own land-budget estimate. Baggage, insurance, visas, room-sharing and connections may change your real costs. A deal badge appears only after at least three earlier checks show a meaningful price drop.</p>
+ </section>
         <div class="itinerary-grid" id="itineraryGrid" aria-live="polite"></div>
         <div class="empty-state" id="emptyState" hidden><h3>No itineraries found</h3><p>Try another destination or remove a filter.</p><button type="button" class="button button-outline-dark" id="resetFilters">SHOW ALL EIGHT</button></div>
       </div>
@@ -234,6 +254,11 @@ function card(trip){
 function visibleTrips(){
  let data=TRIPS.filter(t => (state.filter==='all' || t.categories.includes(state.filter)) && `${t.name} ${t.subtitle} ${t.locale} ${t.summary}`.toLowerCase().includes(state.search.toLowerCase().trim()));
  if(state.sort==='cost')data.sort((a,b)=>a.costN-b.costN||a.number.localeCompare(b.number));
+ if(state.sort==='fare'||state.sort==='total'){
+  const fn=state.sort==='fare'?'price':'total';
+  const get=t=>window.BeyondFares?.[fn]?.(t.id)??Infinity;
+  data.sort((a,b)=>get(a)-get(b)||a.number.localeCompare(b.number));
+ }
  if(state.sort==='pace')data.sort((a,b)=>a.paceN-b.paceN||a.number.localeCompare(b.number));
  if(state.sort==='alpha')data.sort((a,b)=>a.name.localeCompare(b.name));
  return data;
@@ -251,6 +276,7 @@ function render(){
  $('#dockCompare').disabled=count<2;
  $('#headerCompare').setAttribute('aria-label',`Compare itineraries (${count} selected)`);
  hydratePhotos();
+ window.dispatchEvent(new Event('bb:cards-rendered'));
 }
 function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('is-visible');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('is-visible'),2700)}
 function toggleFav(id){state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);save('beyondbrisbane_favorites',state.favorites);render();toast(state.favorites.has(id)?'Added to favorites on this device.':'Removed from favorites.');}
@@ -339,7 +365,9 @@ document.addEventListener('keydown',event=>{
  }
 });
 render();
+window.addEventListener('bb:prices-changed',render);
 
   </script>
+  <script src="flight-prices.js?v=1" defer></script>
 </body>
 </html>
