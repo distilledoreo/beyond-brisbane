@@ -21,3 +21,8 @@
 .bb-total-estimate{grid-column:1/-1;border-top:1px solid #dae8e8;padding-top:8px;font-size:11px;font-weight:700;color:#3d6470}
 .bb-google-link{grid-column:1/-1;font-size:11px;color:#286c83;text-decoration:underline;text-underline-offset:3px;margin-top:3px}
 @media(max-width:700px){.bb-price-head{display:block}.bb-price-head .bb-refresh{margin-top:14px;width:100%}.bb-price-controls input{width:100%}.bb-fare-strip{grid-template-columns:1fr auto}}
+
+.bb-leg-breakdown{grid-column:1/-1;border-top:1px solid #d7e5e5;padding-top:9px;font-size:11px;color:#425f69}
+.bb-leg-breakdown summary{cursor:pointer;color:#296d80;font-weight:700;user-select:none}
+.bb-leg-item{display:flex;gap:14px;justify-content:space-between;border-bottom:1px solid #e2eded;padding:7px 0}
+.bb-leg-item strong{white-space:nowrap;color:#1b4f5e}
