@@ -70,14 +70,14 @@ async function snapshot(){
  const res=await fetch(ENDPOINT,{cache:'no-store',headers:{'apikey':APIKEY}});
  if(!res.ok)throw Error('Pricing service unavailable');
  const data=await res.json();connected=data.connected===true;update(data.quotes);
- status(connected?'Provider connected · shared one-way flight legs cached for seven days.':'Google Flights pricing is not connected yet. No prices are being fabricated.');
+ status(connected?'Provider connected · shared one-way flight legs cached for three days.':'Google Flights pricing is not connected yet. No prices are being fabricated.');
  return data;
 }
 function due(q){return !q||!q.next_refresh_at||!Number.isFinite(Date.parse(q.next_refresh_at))||Date.parse(q.next_refresh_at)<=Date.now();}
 async function refresh(){
  if(loading)return;if(!connected){status('A free flight-data provider API key is needed to show actual fares.');return;}
  const ids=IDS.filter(id=>due(quotes.get(id)));
- if(!ids.length){status('Airfare legs already checked recently. Next provider search after their seven-day cache expires.');return;}
+ if(!ids.length){status('Airfare legs already checked recently. Next provider search after their three-day cache expires.');return;}
  loading=true;if($('bbRefresh'))$('bbRefresh').disabled=true;
  let index=0,finished=0;
  async function worker(){
