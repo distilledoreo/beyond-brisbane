@@ -16,7 +16,7 @@
 
   </style>
 
-<link rel="stylesheet" href="flight-prices.css?v=1" />
+<link rel="stylesheet" href="flight-prices.css?v=2" />
   <link rel="stylesheet" href="community-itineraries.css?v=1" />
 </head>
 <body>
@@ -80,27 +80,62 @@
             <button type="button" class="filter" data-filter="culture" aria-pressed="false">CULTURE</button>
             <button type="button" class="filter" data-filter="nature" aria-pressed="false">NATURE</button>
           </div>
-          <div class="toolbar-right"><label class="search-wrap"><span class="sr-only">Search itineraries</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search a destination" autocomplete="off" /></label><label class="sort-wrap"><span class="sr-only">Sort itineraries</span><select id="sortSelect"><option value="recommended">Recommended order</option><option value="fare">Lowest airfare first</option><option value="total">Lowest estimated total first</option><option value="cost">Lower budget first</option><option value="pace">Most relaxed first</option><option value="alpha">A to Z</option></select></label></div>
+          <div class="toolbar-right"><label class="search-wrap"><span class="sr-only">Search itineraries</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search a destination" autocomplete="off" /></label><label class="sort-wrap"><span class="sr-only">Sort itineraries</span><select id="sortSelect"><option value="recommended">Recommended order</option><option value="fare">Lowest airfare first</option><option value="total">Lowest total trip estimate first</option><option value="cost">Lower budget first</option><option value="pace">Most relaxed first</option><option value="alpha">A to Z</option></select></label></div>
         </div>
 <section id="fareHub" class="bb-price-panel" aria-labelledby="fareHubTitle">
   <div class="bb-price-head">
    <div>
     <p class="bb-price-overline">Flight comparison · July 2027</p>
-    <h3 id="fareHubTitle">Compare current flight-price estimates.</h3>
-    <p>For each option, we add the lowest one-way economy flight prices for New York → Brisbane (June 25) → Sydney (July 6) → the additional stops → New York (July 17). These are separate flight-leg quotes, <strong>not</strong> a combined, bookable itinerary.</p>
+    <h3 id="fareHubTitle">Compare estimated full-trip costs.</h3>
+    <p>Each trip total combines cached Google Flights airfare with researched, non-live costs for shared accommodation, food, local transport, activities and travel allowances. Assumes <strong>six adults sharing</strong>—with the least expensive modeled legal lodging arrangement at each stop. Flight quotes are separate one-way legs, not a combined bookable ticket.</p>
    </div>
    <button class="bb-refresh" id="bbRefresh" type="button">CHECK CURRENT FARES</button>
   </div>
   <div class="bb-price-controls">
-    <label for="bbLandBudget">Your estimated hotels, food & activities per person (USD, optional)
-      <input id="bbLandBudget" type="number" min="0" max="100000" step="50" placeholder="Enter your land budget">
+    <label for="bbConventionRate">Brisbane convention hotel · rate per room/night (USD; editable)
+      <input id="bbConventionRate" type="number" min="0" max="2500" step="5" value="185" aria-describedby="bbConventionHelp">
+      <small id="bbConventionHelp">Three rooms × nine nights, divided among six people. Replace this placeholder with the actual delegate hotel rate.</small>
     </label>
     <button class="bb-copy" id="bbCopyRoutes" type="button">COPY ALL EIGHT FLIGHT ROUTES</button>
     <span id="bbPriceCount" style="font-size:12px;color:#42646a"></span>
   </div>
   <p id="bbQuoteStatus" class="bb-price-status" role="status">Checking fare-service connection…</p>
-  <p class="bb-price-footnote">Quotes are retrieved from Google Flights data via SerpApi, cached for up to three days (subject to a monthly 200-search safeguard). Prices are for one adult, not six guaranteed seats. The least expensive flight for each segment might not have workable connections or arrive in time for scheduled activities. Booking legs separately can create missed-connection risks; compare the complete trip before purchasing. Hotel and activity costs are <strong>not live</strong>; the optional land budget is a personal estimate added equally to each itinerary. Deal badges compare previous observed fare sums, not Google Flights' official price forecasts.</p>
+  <p class="bb-price-footnote">Airfare is sourced from Google Flights via SerpApi and cached for up to three days (200 searches/month cap). It is the lowest separate one-way economy fare for <strong>one adult</strong>; six seats at that rate are not guaranteed. Airport timing, baggage, connections and through-ticket availability must be checked before booking. The rest is a <strong>November 2026 research-based estimate, not a July 2027 hotel quote</strong>. The planning range is a scenario, not a statistical confidence interval. Meal/tour choices, actual bed configuration and exchange rates can materially change totals.</p>
  </section>
+        <section id="budgetOverview" class="bb-budget-overview" aria-labelledby="bbBudgetTitle">
+          <div class="bb-budget-overview-head">
+            <div>
+              <p class="bb-price-overline">FULL-TRIP BUDGETS · USD PER ADULT</p>
+              <h3 id="bbBudgetTitle">Compare estimated totals, not just airfare.</h3>
+              <p>Same nine nights in Brisbane and four in Sydney across all eight routes, followed by seven nights in the selected destinations. Estimates use the lower modeled all-in rate between three shared hotel rooms and one six-person, three-bedroom rental at each stop, except where a hotel is required or fixed.</p>
+            </div>
+            <div class="bb-budget-side">GROUP SIZE <strong>6 adults</strong><small>Two per bedroom or room, subject to agreed bed layouts</small></div>
+          </div>
+          <div id="bbBudgetLeaderboard" class="bb-budget-leaderboard" aria-live="polite">
+            <p>Loading the current flight-price totals…</p>
+          </div>
+          <details class="bb-methodology">
+            <summary>How the estimates and room-sharing comparisons are calculated</summary>
+            <p><strong>Lodging:</strong> At each location, compare the modeled full cost of three hotel rooms for six people (three rooms × nightly rate × nights, plus an assumed 12% for hotel taxes/fees) with a three-bedroom rental for six (whole-unit nightly target × nights + estimated cleaning/service charges). Use the lower modeled total divided by six. Rentals are only included when plausibly legal; Singapore uses hotels, and Brisbane stays with the convention hotel. These are modeled targets, <strong>not verified properties or July 2027 rate quotes</strong>. Confirm six-adult occupancy, bed arrangements, location, taxes and fees before booking.</p>
+            <p><strong>Other costs:</strong> Destination-based daily meal and local travel budgets plus itinerary-specific excursions, airport transfers, insurance, checked baggage, travel-day meals and entry allowances. Add a 10% buffer to estimated ground expenses. Flights retain the live-feed cached price; the displayed scenario range assumes ground costs approximately 15% lower to 30% higher and fares up to 40% higher than the lowest returned separate legs.</p>
+            <p><strong>Research benchmarks:</strong>
+              <a href="https://www.budgetyourtrip.com/australia/brisbane/" target="_blank" rel="noopener noreferrer">Brisbane</a> ·
+              <a href="https://www.budgetyourtrip.com/Australia/Sydney" target="_blank" rel="noopener noreferrer">Sydney</a> ·
+              <a href="https://www.budgetyourtrip.com/fiji" target="_blank" rel="noopener noreferrer">Fiji</a> ·
+              <a href="https://www.queenstownnz.co.nz/stories/post/queenstown-accommodation-faqs/" target="_blank" rel="noopener noreferrer">Queenstown</a> ·
+              <a href="https://balinsky.info/en/knowledge/bali-villa-rental-rates-by-area-2026" target="_blank" rel="noopener noreferrer">3-bedroom Bali villas</a> ·
+              <a href="https://www.budgetyourtrip.com/australia/cairns" target="_blank" rel="noopener noreferrer">Cairns</a> ·
+              <a href="https://www.budgetyourtrip.com/Japan/tokyo" target="_blank" rel="noopener noreferrer">Tokyo</a> ·
+              <a href="https://www.budgetyourtrip.com/Singapore" target="_blank" rel="noopener noreferrer">Singapore</a> ·
+              <a href="https://www.budgetyourtrip.com/australia/darwin/" target="_blank" rel="noopener noreferrer">Darwin</a> ·
+              <a href="https://www.budgetyourtrip.com/Vietnam" target="_blank" rel="noopener noreferrer">Vietnam</a> ·
+              <a href="https://www.budgetyourtrip.com/australia/melbourne" target="_blank" rel="noopener noreferrer">Melbourne</a> ·
+              <a href="https://www.nerdwallet.com/travel/learn/are-airbnbs-more-cost-effective-than-hotels" target="_blank" rel="noopener noreferrer">Six-person accommodation comparison</a> ·
+              <a href="https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/" target="_blank" rel="noopener noreferrer">Singapore rental restrictions</a>.
+            </p>
+            <p>Benchmarks collected November 4, 2026. July 2027 lodging availability and official convention hotel rates are not verified. Some itinerary narrative transfer dates differ from the flight-search dates; the cost model follows the flight-search legs. No automatic prices are estimated for custom group-submitted itineraries.</p>
+          </details>
+        </section>
         <div class="itinerary-grid" id="itineraryGrid" aria-live="polite"></div>
         <div class="empty-state" id="emptyState" hidden><h3>No itineraries found</h3><p>Try another destination or remove a filter.</p><button type="button" class="button button-outline-dark" id="resetFilters">SHOW ALL EIGHT</button></div>
       </div>
@@ -351,7 +386,7 @@ function openComparison(){
  const trips=[...state.compare].map(id=>TRIPS.find(t=>t.id===id)).filter(Boolean);
  if(trips.length===0){toast('Add at least two itineraries to compare.');document.querySelector('#itineraries').scrollIntoView({behavior:'smooth'});return;}
  const row=(label,fn)=>`<tr><td>${safe(label)}</td>${trips.map(t=>`<td>${safe(fn(t))}</td>`).join('')}</tr>`;
- $('#comparisonContent').innerHTML=`<p class="comparison-hint">Compare the routes after the fixed Brisbane and Sydney stops. Budget levels are relative, not live fares.</p><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>YOUR CHOICES</th>${trips.map(t=>`<th><img class="compare-thumb" src="${t.image}" data-photo-id="${t.id}" alt="Illustration of ${safe(t.name)}"/>${safe(t.name)}</th>`).join('')}</tr></thead><tbody>
+ $('#comparisonContent').innerHTML=`<p class="comparison-hint">Compare the routes after the fixed Brisbane and Sydney stops. The total combines cached flight quotes with researched land-cost estimates. Figures are not bookable prices.</p><div class="comparison-scroll"><table class="comparison-table"><thead><tr><th>YOUR CHOICES</th>${trips.map(t=>`<th><img class="compare-thumb" src="${t.image}" data-photo-id="${t.id}" alt="Illustration of ${safe(t.name)}"/>${safe(t.name)}</th>`).join('')}</tr></thead><tbody>
  ${row('Travel pattern',t=>t.route.replace('Brisbane → Sydney → ',''))}
  ${row('Typical dates',t=>t.dates)}
  ${row('Budget',t=>t.cost)}
@@ -405,7 +440,8 @@ render();
 window.addEventListener('bb:prices-changed',render);
 
   </script>
-  <script src="flight-prices.js?v=3" defer></script>
+  <script src="ground-budgets.js?v=1" defer></script>
+  <script src="flight-prices.js?v=4" defer></script>
   <script src="community-itineraries.js?v=1" defer></script>
 </body>
 </html>
