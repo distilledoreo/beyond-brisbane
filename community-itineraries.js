@@ -66,7 +66,7 @@
       route.textContent='Brisbane → Sydney → '+idea.segments.map(s=>s.destination||'').filter(Boolean).join(' → ');
       card.append(route);
       const estimate=idea.segments[0]?.itinerary_estimate;
-      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='community-estimate';budget.textContent='Estimated total: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';card.append(budget);}
+      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='community-estimate';budget.textContent='Estimated extension total: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';card.append(budget);}
       const timeline=document.createElement('div');timeline.className='community-timeline';
       timeline.setAttribute('aria-label','Proposed itinerary dates');
       dateLine(timeline,'JUN 27 – JUL 5','Brisbane · fixed',true);
