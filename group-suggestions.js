@@ -232,8 +232,6 @@
     });
     $('ssRefresh').addEventListener('click',reload);
     $('ssDestination').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addStop();}});
-    $('ssEstimate').addEventListener('change',()=>{const v=$('ssEstimate').value;if(v&&(!Number.isFinite(Number(v))||Number(v)<1||Number(v)>200000))banner('Enter a total estimate between 1 and 200,000, or leave it blank.','error');});
-    $('ssCurrency').addEventListener('change',()=>{segments.forEach(segment=>segment.currency=$('ssCurrency').value);renderDraft();});
     window.addEventListener('bb:member-ready',e=>{
       const detail=e.detail;
       if(!detail?.client||!detail.first||!detail.last)return;
@@ -243,7 +241,7 @@
     });
     window.addEventListener('bb:member-signed-out',()=>{
       session=null;segments=[];start=null;end=null;proposals=[];
-      $('ssDestination').value='';$('ssActivities').value='';$('ssStopEstimate').value='';$('ssEstimate').value='';$('ssCurrency').value='USD';$('ssIdeas').replaceChildren();renderDraft();banner('');
+      $('ssDestination').value='';$('ssIdeas').replaceChildren();renderDraft();banner('');
     });
     renderDraft();
   }
