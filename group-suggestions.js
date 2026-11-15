@@ -103,6 +103,8 @@
       const loc=document.createElement('strong');loc.textContent=segment.destination;
       const when=document.createElement('small');when.textContent=rangeLabel(segment.start,segment.end);
       details.append(loc,when);
+      if(segment.activities){const activity=document.createElement('small');activity.className='ss-stop-detail';activity.textContent='Activities: '+segment.activities;details.append(activity);}
+      if(Number(segment.estimated_cost_per_person)>0){const cost=document.createElement('small');cost.className='ss-stop-detail';cost.textContent='Estimated stop cost: '+new Intl.NumberFormat('en-US',{style:'currency',currency:segment.currency||$('ssCurrency').value,maximumFractionDigits:0}).format(Number(segment.estimated_cost_per_person))+' per person';details.append(cost);}
       const remove=button('REMOVE','ss-remove');remove.dataset.remove=String(i);
       remove.setAttribute('aria-label','Remove '+segment.destination+' for '+rangeLabel(segment.start,segment.end));
       line.append(details,remove);root.append(line);
@@ -118,9 +120,12 @@
     const input=$('ssDestination'),dest=input?.value.trim().replace(/\s+/g,' ');
     if(!dest||dest.length<2||dest.length>100)return banner('Enter a destination between 2 and 100 characters.','error');
     if(/[\x00-\x1F\x7F]/.test(dest))return banner('Remove control characters from the destination.','error');
-    segments.push({start,end,destination:dest});
+    const activities=$('ssActivities').value.trim(),stopCostRaw=$('ssStopEstimate').value.trim(),stopCost=stopCostRaw?Number(stopCostRaw):null;
+    if(activities.length>600)return banner('Keep activity details under 600 characters.','error');
+    if(stopCostRaw&&(!Number.isFinite(stopCost)||stopCost<1||stopCost>200000))return banner('Enter a destination estimate between 1 and 200,000, or leave it blank.','error');
+    segments.push({start,end,destination:dest,activities,estimated_cost_per_person:stopCost,currency:$('ssCurrency').value});
     segments.sort((a,b)=>a.start.localeCompare(b.start));
-    start=null;end=null;input.value='';banner('Added '+dest+'. Select another date range, or submit your itinerary.','success');
+    start=null;end=null;input.value='';$('ssActivities').value='';$('ssStopEstimate').value='';banner('Added '+dest+'. Select another date range, or submit your itinerary.','success');
     renderDraft();input.focus();
   }
   async function reload() {
@@ -165,11 +170,15 @@
         const place=document.createElement('strong');place.textContent=fixed[1];
         row.append(date,place);stops.append(row);
       });
+      const estimate=all[0]?.itinerary_estimate;
+      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='ss-idea-estimate';budget.textContent='Estimated total: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';stops.append(budget);}
       all.forEach(item=>{
         const row=document.createElement('div');row.className='ss-idea-leg';
         const date=document.createElement('span');date.textContent=rangeLabel(item.start,item.end);
         const place=document.createElement('strong');place.textContent=item.destination;
         row.append(date,place);stops.append(row);
+        if(item.activities){const activity=document.createElement('p');activity.className='ss-idea-detail';activity.textContent='Activities: '+item.activities;stops.append(activity);}
+        if(Number(item.estimated_cost_per_person)>0){const cost=document.createElement('p');cost.className='ss-idea-detail';cost.textContent='Estimated stop cost: '+new Intl.NumberFormat('en-US',{style:'currency',currency:item.currency||estimate?.currency||'USD',maximumFractionDigits:0}).format(Number(item.estimated_cost_per_person))+' per person';stops.append(cost);}
       });
       if(idea.mine){
         const remove=button('WITHDRAW MY SUGGESTION','ss-remove ss-withdraw');remove.dataset.withdraw=idea.id;stops.append(remove);
@@ -182,13 +191,14 @@
     if(!confirm('Submit this itinerary idea for the group to review?'))return;
     const here=session;working=true;renderDraft();banner('Submitting your itinerary…');
     try{
+      const payload=segments.map((segment,index)=>index===0?{...segment,itinerary_estimate:$('ssEstimate').value.trim()?{amount:Number($('ssEstimate').value),currency:$('ssCurrency').value}:null}:segment);
       const {data,error}=await here.client.rpc('bb_submit_itinerary_suggestion',{
-        p_first:here.first,p_last:here.last,p_segments:segments
+        p_first:here.first,p_last:here.last,p_segments:payload
       });
       if(error)throw error;
       if(!data)throw Error('Unable to submit. Check your date ranges or suggestion limit.');
       if(session!==here)return;
-      segments=[];start=null;end=null;renderDraft();
+      segments=[];start=null;end=null;$('ssEstimate').value='';$('ssActivities').value='';$('ssStopEstimate').value='';renderDraft();
       banner('Submitted! Everyone in the group can now view your itinerary idea.','success');
       await reload();
       window.dispatchEvent(new Event('bb:suggestions-changed'));
@@ -227,6 +237,7 @@
     });
     $('ssRefresh').addEventListener('click',reload);
     $('ssDestination').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addStop();}});
+    $('ssEstimate').addEventListener('change',()=>{const v=$('ssEstimate').value;if(v&&(!Number.isFinite(Number(v))||Number(v)<1||Number(v)>200000))banner('Enter a total estimate between 1 and 200,000, or leave it blank.','error');});
     window.addEventListener('bb:member-ready',e=>{
       const detail=e.detail;
       if(!detail?.client||!detail.first||!detail.last)return;
