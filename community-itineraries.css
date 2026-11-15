@@ -50,3 +50,5 @@
 .community-privacy{margin:18px 0 0;font-size:11px;color:#748b90;line-height:1.55}
 @media(max-width:900px){.community-header{align-items:flex-start;flex-direction:column}.community-add-link{width:100%}}
 @media(max-width:630px){.community-stop-detail{padding-left:0}.community-login{grid-template-columns:1fr}.community-gate{padding:18px}.community-stop{grid-template-columns:90px 13px minmax(0,1fr)}.community-card{padding:19px}.community-tools{flex-wrap:wrap}}
+
+.community-total-estimate{margin:0 0 8px;padding:12px 13px;background:#e7f1ed;border-left:3px solid #397e68;color:#214f43;font-size:15px;font-weight:800}
