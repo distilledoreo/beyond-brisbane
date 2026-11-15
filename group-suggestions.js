@@ -118,12 +118,9 @@
     const input=$('ssDestination'),dest=input?.value.trim().replace(/\s+/g,' ');
     if(!dest||dest.length<2||dest.length>100)return banner('Enter a destination between 2 and 100 characters.','error');
     if(/[\x00-\x1F\x7F]/.test(dest))return banner('Remove control characters from the destination.','error');
-    const activities=$('ssActivities').value.trim().replace(/\s+/g,' '),stopCostRaw=$('ssStopEstimate').value.trim(),stopCost=stopCostRaw?Number(stopCostRaw):null;
-    if(activities.length>600)return banner('Keep activity details under 600 characters.','error');
-    if(stopCostRaw&&(!Number.isFinite(stopCost)||stopCost<1||stopCost>200000))return banner('Enter a destination estimate between 1 and 200,000, or leave it blank.','error');
-    segments.push({start,end,destination:dest,activities,estimated_cost_per_person:stopCost,currency:$('ssCurrency').value});
+    segments.push({start,end,destination:dest});
     segments.sort((a,b)=>a.start.localeCompare(b.start));
-    start=null;end=null;input.value='';$('ssActivities').value='';$('ssStopEstimate').value='';banner('Added '+dest+'. Select another date range, or submit your itinerary.','success');
+    start=null;end=null;input.value='';banner('Added '+dest+'. Select another date range, or submit your itinerary.','success');
     renderDraft();input.focus();
   }
   async function reload() {
@@ -186,9 +183,6 @@
   }
   async function submit() {
     if(!session||working||!segments.length)return;
-    const estimateRaw=$('ssEstimate').value.trim(),estimateAmount=estimateRaw?Number(estimateRaw):null;
-    if(estimateRaw&&(!Number.isFinite(estimateAmount)||estimateAmount<1||estimateAmount>200000))return banner('Enter a total estimate between 1 and 200,000, or leave it blank.','error');
-    if(!['USD','AUD','NZD'].includes($('ssCurrency').value))return banner('Choose a supported currency.','error');
     if(!confirm('Submit this itinerary idea for the group to review?'))return;
     const here=session;working=true;renderDraft();banner('Submitting your itinerary…');
     try{
