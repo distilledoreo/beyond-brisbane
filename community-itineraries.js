@@ -66,6 +66,15 @@
       route.textContent='Brisbane → Sydney → '+idea.segments.map(s=>s.destination||'').filter(Boolean).join(' → ');
       card.append(route);
       const estimate=idea.segments[0]?.itinerary_estimate;
+      const fullEstimate=idea.segments[0]?.full_trip_estimate;
+      if(fullEstimate&&Number.isFinite(Number(fullEstimate.amount))&&Number(fullEstimate.amount)>0){
+        const total=document.createElement('p');total.className='community-total-estimate';
+        total.textContent='Estimated full trip per person: '+new Intl.NumberFormat('en-US',{style:'currency',currency:fullEstimate.currency||'USD',maximumFractionDigits:0}).format(Math.round(Number(fullEstimate.amount)/50)*50);
+        card.append(total);
+        const totalNote=document.createElement('p');totalNote.className='community-stop-detail';
+        totalNote.textContent='Apples-to-apples total: includes the fixed Brisbane and Sydney portions, extension costs, and estimated flights. Airfare assumptions are planning estimates, not guaranteed fares.';
+        card.append(totalNote);
+      }
       if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='community-estimate';budget.textContent='Estimated extension cost: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';card.append(budget);const budgetNote=document.createElement('p');budgetNote.className='community-stop-detail';budgetNote.textContent='Includes lodging, meals, local transport, activities, and regional flights; excludes the fixed Brisbane and Sydney stays and transpacific flights.';card.append(budgetNote);}
       const timeline=document.createElement('div');timeline.className='community-timeline';
       timeline.setAttribute('aria-label','Proposed itinerary dates');
