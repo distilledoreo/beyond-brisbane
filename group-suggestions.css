@@ -67,3 +67,5 @@ button.ss-added{background:#d4e9f2;color:#275f72;border-color:#8ac1d1}
 .unranked-result .meter{opacity:.35}
 .unranked-result .result-value{color:#98afb5}
 .group-suggestion-result .result-detail{gap:8px;flex-wrap:wrap}
+
+.ss-idea-total{margin:12px 0 5px;padding:12px 13px;background:#e7f1ed;border-left:3px solid #397e68;color:#214f43;font-size:15px;font-weight:800}
