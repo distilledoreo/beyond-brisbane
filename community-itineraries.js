@@ -65,6 +65,8 @@
       const route=document.createElement('p');route.className='community-route';
       route.textContent='Brisbane → Sydney → '+idea.segments.map(s=>s.destination||'').filter(Boolean).join(' → ');
       card.append(route);
+      const estimate=idea.segments[0]?.itinerary_estimate;
+      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='community-estimate';budget.textContent='Estimated total: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';card.append(budget);}
       const timeline=document.createElement('div');timeline.className='community-timeline';
       timeline.setAttribute('aria-label','Proposed itinerary dates');
       dateLine(timeline,'JUN 27 – JUL 5','Brisbane · fixed',true);
@@ -72,6 +74,8 @@
       for(const segment of idea.segments){
         if(!segment||!segment.start||!segment.end||!segment.destination)continue;
         dateLine(timeline,range(segment.start,segment.end),String(segment.destination));
+        if(segment.activities){const activity=document.createElement('p');activity.className='community-stop-detail';activity.textContent='Activities: '+String(segment.activities);timeline.append(activity);}
+        if(Number(segment.estimated_cost_per_person)>0){const cost=document.createElement('p');cost.className='community-stop-detail';cost.textContent='Estimated stop cost: '+new Intl.NumberFormat('en-US',{style:'currency',currency:segment.currency||estimate?.currency||'USD',maximumFractionDigits:0}).format(Number(segment.estimated_cost_per_person))+' per person';timeline.append(cost);}
       }
       card.append(timeline);
       const footer=document.createElement('div');footer.className='community-card-bottom';
