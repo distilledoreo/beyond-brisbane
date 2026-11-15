@@ -166,7 +166,7 @@
         row.append(date,place);stops.append(row);
       });
       const estimate=all[0]?.itinerary_estimate;
-      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='ss-idea-estimate';budget.textContent='Estimated trip total: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';stops.append(budget);}
+      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='ss-idea-estimate';budget.textContent='Estimated extension cost: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';stops.append(budget);const budgetNote=document.createElement('p');budgetNote.className='ss-idea-detail';budgetNote.textContent='Includes lodging, meals, local transport, activities, and regional flights. Excludes the fixed Brisbane and Sydney stays and transpacific flights.';stops.append(budgetNote);}
       all.forEach(item=>{
         const row=document.createElement('div');row.className='ss-idea-leg';
         const date=document.createElement('span');date.textContent=rangeLabel(item.start,item.end);
