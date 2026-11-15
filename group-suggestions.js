@@ -103,8 +103,6 @@
       const loc=document.createElement('strong');loc.textContent=segment.destination;
       const when=document.createElement('small');when.textContent=rangeLabel(segment.start,segment.end);
       details.append(loc,when);
-      if(segment.activities){const activity=document.createElement('small');activity.className='ss-stop-detail';activity.textContent='Activities: '+segment.activities;details.append(activity);}
-      if(Number(segment.estimated_cost_per_person)>0){const cost=document.createElement('small');cost.className='ss-stop-detail';cost.textContent='Estimated stop cost: '+new Intl.NumberFormat('en-US',{style:'currency',currency:segment.currency||$('ssCurrency').value,maximumFractionDigits:0}).format(Number(segment.estimated_cost_per_person))+' per person';details.append(cost);}
       const remove=button('REMOVE','ss-remove');remove.dataset.remove=String(i);
       remove.setAttribute('aria-label','Remove '+segment.destination+' for '+rangeLabel(segment.start,segment.end));
       line.append(details,remove);root.append(line);
@@ -194,14 +192,14 @@
     if(!confirm('Submit this itinerary idea for the group to review?'))return;
     const here=session;working=true;renderDraft();banner('Submitting your itinerary…');
     try{
-      const payload=segments.map((segment,index)=>index===0?{...segment,itinerary_estimate:$('ssEstimate').value.trim()?{amount:Number($('ssEstimate').value),currency:$('ssCurrency').value}:null}:segment);
+      const payload=segments;
       const {data,error}=await here.client.rpc('bb_submit_itinerary_suggestion',{
         p_first:here.first,p_last:here.last,p_segments:payload
       });
       if(error)throw error;
       if(!data)throw Error('Unable to submit. Check your date ranges or suggestion limit.');
       if(session!==here)return;
-      segments=[];start=null;end=null;$('ssEstimate').value='';$('ssActivities').value='';$('ssStopEstimate').value='';renderDraft();
+      segments=[];start=null;end=null;renderDraft();
       banner('Submitted! Everyone in the group can now view your itinerary idea.','success');
       await reload();
       window.dispatchEvent(new Event('bb:suggestions-changed'));
