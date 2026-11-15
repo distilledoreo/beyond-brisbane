@@ -71,14 +71,13 @@
           </div>
           <div id="ssMonths" class="ss-months" aria-label="June and July 2027 calendars"></div>
           <p class="ss-selection" id="ssSelection" aria-live="polite">Choose your first date after Sydney.</p>
-          <div class="ss-estimate-row"><label for="ssEstimate">Estimated trip total per person (optional)<input id="ssEstimate" type="number" min="1" max="200000" step="1" inputmode="decimal" placeholder="e.g., 2400"></label><label for="ssCurrency">Currency<select id="ssCurrency"><option value="USD">USD · US dollars</option><option value="AUD">AUD · Australian dollars</option><option value="NZD">NZD · New Zealand dollars</option></select></label></div>
+          <p class="ss-cost-note">No budget or activity details are required to submit. Estimated extension costs and suggested activities will be added to group itineraries after submission.</p>
           <div class="ss-editor">
             <label for="ssDestination">Where should we go during those dates?
               <input id="ssDestination" type="text" maxlength="100" placeholder="e.g., Queenstown, New Zealand" autocomplete="off">
             </label>
             <button type="button" id="ssAdd" class="btn secondary">+ ADD DESTINATION</button>
           </div>
-          <div class="ss-stop-extra"><label for="ssActivities">Activities / experiences at this destination (optional)<textarea id="ssActivities" rows="2" maxlength="600" placeholder="e.g., Milford Sound cruise, scenic hikes, local markets"></textarea></label><label for="ssStopEstimate">Estimated cost per person (optional)<input id="ssStopEstimate" type="number" min="1" max="200000" step="1" inputmode="decimal" placeholder="e.g., 650"></label></div>
           <div class="ss-draft">
             <div class="ss-draft-title"><h3>Your itinerary draft</h3><span id="ssDraftCount">0 stops added</span></div>
             <div id="ssStops" class="ss-stops"></div>
