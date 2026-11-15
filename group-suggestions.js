@@ -120,7 +120,7 @@
     const input=$('ssDestination'),dest=input?.value.trim().replace(/\s+/g,' ');
     if(!dest||dest.length<2||dest.length>100)return banner('Enter a destination between 2 and 100 characters.','error');
     if(/[\x00-\x1F\x7F]/.test(dest))return banner('Remove control characters from the destination.','error');
-    const activities=$('ssActivities').value.trim(),stopCostRaw=$('ssStopEstimate').value.trim(),stopCost=stopCostRaw?Number(stopCostRaw):null;
+    const activities=$('ssActivities').value.trim().replace(/\s+/g,' '),stopCostRaw=$('ssStopEstimate').value.trim(),stopCost=stopCostRaw?Number(stopCostRaw):null;
     if(activities.length>600)return banner('Keep activity details under 600 characters.','error');
     if(stopCostRaw&&(!Number.isFinite(stopCost)||stopCost<1||stopCost>200000))return banner('Enter a destination estimate between 1 and 200,000, or leave it blank.','error');
     segments.push({start,end,destination:dest,activities,estimated_cost_per_person:stopCost,currency:$('ssCurrency').value});
@@ -171,7 +171,7 @@
         row.append(date,place);stops.append(row);
       });
       const estimate=all[0]?.itinerary_estimate;
-      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='ss-idea-estimate';budget.textContent='Estimated total: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';stops.append(budget);}
+      if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='ss-idea-estimate';budget.textContent='Estimated trip total: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';stops.append(budget);}
       all.forEach(item=>{
         const row=document.createElement('div');row.className='ss-idea-leg';
         const date=document.createElement('span');date.textContent=rangeLabel(item.start,item.end);
@@ -241,6 +241,7 @@
     $('ssRefresh').addEventListener('click',reload);
     $('ssDestination').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addStop();}});
     $('ssEstimate').addEventListener('change',()=>{const v=$('ssEstimate').value;if(v&&(!Number.isFinite(Number(v))||Number(v)<1||Number(v)>200000))banner('Enter a total estimate between 1 and 200,000, or leave it blank.','error');});
+    $('ssCurrency').addEventListener('change',()=>{segments.forEach(segment=>segment.currency=$('ssCurrency').value);renderDraft();});
     window.addEventListener('bb:member-ready',e=>{
       const detail=e.detail;
       if(!detail?.client||!detail.first||!detail.last)return;
