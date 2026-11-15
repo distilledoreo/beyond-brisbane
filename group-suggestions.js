@@ -188,6 +188,9 @@
   }
   async function submit() {
     if(!session||working||!segments.length)return;
+    const estimateRaw=$('ssEstimate').value.trim(),estimateAmount=estimateRaw?Number(estimateRaw):null;
+    if(estimateRaw&&(!Number.isFinite(estimateAmount)||estimateAmount<1||estimateAmount>200000))return banner('Enter a total estimate between 1 and 200,000, or leave it blank.','error');
+    if(!['USD','AUD','NZD'].includes($('ssCurrency').value))return banner('Choose a supported currency.','error');
     if(!confirm('Submit this itinerary idea for the group to review?'))return;
     const here=session;working=true;renderDraft();banner('Submitting your itinerary…');
     try{
@@ -247,7 +250,7 @@
     });
     window.addEventListener('bb:member-signed-out',()=>{
       session=null;segments=[];start=null;end=null;proposals=[];
-      $('ssDestination').value='';$('ssIdeas').replaceChildren();renderDraft();banner('');
+      $('ssDestination').value='';$('ssActivities').value='';$('ssStopEstimate').value='';$('ssEstimate').value='';$('ssCurrency').value='USD';$('ssIdeas').replaceChildren();renderDraft();banner('');
     });
     renderDraft();
   }
