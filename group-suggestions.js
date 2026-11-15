@@ -166,6 +166,15 @@
         row.append(date,place);stops.append(row);
       });
       const estimate=all[0]?.itinerary_estimate;
+      const fullEstimate=all[0]?.full_trip_estimate;
+      if(fullEstimate&&Number.isFinite(Number(fullEstimate.amount))&&Number(fullEstimate.amount)>0){
+        const total=document.createElement('p');total.className='ss-idea-total';
+        total.textContent='Estimated full trip per person: '+new Intl.NumberFormat('en-US',{style:'currency',currency:fullEstimate.currency||'USD',maximumFractionDigits:0}).format(Math.round(Number(fullEstimate.amount)/50)*50);
+        stops.append(total);
+        const totalNote=document.createElement('p');totalNote.className='ss-idea-detail';
+        totalNote.textContent='Includes Brisbane and Sydney, the extension, and estimated flights. Airfare assumptions are planning estimates, not guaranteed fares.';
+        stops.append(totalNote);
+      }
       if(estimate&&Number.isFinite(Number(estimate.amount))&&Number(estimate.amount)>0){const budget=document.createElement('p');budget.className='ss-idea-estimate';budget.textContent='Estimated extension cost: '+new Intl.NumberFormat('en-US',{style:'currency',currency:estimate.currency||'USD',maximumFractionDigits:0}).format(Number(estimate.amount))+' per person';stops.append(budget);const budgetNote=document.createElement('p');budgetNote.className='ss-idea-detail';budgetNote.textContent='Includes lodging, meals, local transport, activities, and regional flights. Excludes the fixed Brisbane and Sydney stays and transpacific flights.';stops.append(budgetNote);}
       all.forEach(item=>{
         const row=document.createElement('div');row.className='ss-idea-leg';
